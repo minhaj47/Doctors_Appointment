@@ -3,12 +3,12 @@ package com.example.doctors_appointment
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.doctors_appointment.ui.homePage
 import com.example.doctors_appointment.ui.signIn
+import com.example.doctors_appointment.ui.signUp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable(Screen.signUp.route){
-                    homePage(navController = navController)
+                    signUp(navController = navController)
                 }
             }
         }
