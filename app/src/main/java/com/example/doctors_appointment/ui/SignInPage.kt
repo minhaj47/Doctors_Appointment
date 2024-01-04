@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.R
+import com.example.doctors_appointment.Screen
 import com.example.doctors_appointment.ui.theme.Indigo100
 import com.example.doctors_appointment.ui.theme.Indigo400
 import com.example.doctors_appointment.ui.theme.Indigo900
@@ -151,8 +152,8 @@ fun signIn(navController: NavController){
 
         Button(
             onClick = {
-                      navController.popBackStack()
-                      },
+                navController.navigate(Screen.mainHome.route)
+            },
             modifier = Modifier
                 .height(50.dp)
                 .width(150.dp) ,
@@ -182,7 +183,7 @@ fun signIn(navController: NavController){
         )
         TextButton(
             onClick = {
-                      navController.navigate("signUp")
+                      navController.navigate(Screen.signUp.route)
                       },
             modifier = Modifier
                 .width(80.dp)

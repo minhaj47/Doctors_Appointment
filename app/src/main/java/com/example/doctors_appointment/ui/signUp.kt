@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.R
+import com.example.doctors_appointment.Screen
 import com.example.doctors_appointment.ui.theme.Indigo100
 import com.example.doctors_appointment.ui.theme.Indigo900
 
@@ -64,7 +65,7 @@ fun signUp(navController: NavController){
         )
 
         Spacer(
-            modifier = Modifier.height(30.dp)
+            modifier = Modifier.height(25.dp)
         )
 
         Text(
@@ -202,10 +203,9 @@ fun signUp(navController: NavController){
             modifier = Modifier.height(30.dp)
         )
 
-
         Button(
             onClick = {
-//                navController.popBackStack()
+                navController.navigate(Screen.mainHome.route)
             },
             modifier = Modifier
                 .height(50.dp)
@@ -227,7 +227,7 @@ fun signUp(navController: NavController){
 
         OutlinedButton(
             onClick = {
-//                navController.popBackStack()
+                navController.navigate(Screen.mainHome.route)
             },
             modifier = Modifier
                 .height(50.dp)

@@ -17,7 +17,7 @@ val Purple900 = Color(0xFF311B92)
 //figma
 
 //val button = Color(0xFF6B84E5)
-
+val Indigo50 = Color(0xFFE8EAF6)
 val Indigo100 = Color(0xFFC5CAE9)
 val Indigo200 = Color(0xFF9FA8DA)
 val Indigo300 = Color(0xFF7986CB)
