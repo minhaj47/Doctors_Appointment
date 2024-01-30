@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import com.example.doctors_appointment.R
 import com.example.doctors_appointment.ui.theme.Indigo50
 
@@ -117,4 +118,8 @@ fun CatagoryCard(
              fontSize = 12.sp
          )
     }
+}
+
+class NavigationViewModel: ViewModel(){
+    var selectedItemIndex: Int = 0
 }

@@ -1,35 +1,15 @@
-package com.example.doctors_appointment.classes
+package com.example.doctors_appointment.data
 
+import com.example.doctors_appointment.data.model.Appointment
+import com.example.doctors_appointment.data.model.Doctor
+import com.example.doctors_appointment.data.model.Patient
+import java.util.Date
+import java.util.UUID
 import kotlin.random.Random
 
-class Doctor(
-    val doctorID: String,
-    val name: String,
-    val gender: Boolean, // true for male and false for female
-    val contactNumber: String,
-    val email: String,
-    val address: String,
-    val rating: Double,
-    val reviews: List<String>,
-    val bmdcRegistrationNumber: String,
-    val qualifications: List<String>,
-    val specialties: String,
-    val medicalSpecialty: String,
-    val profileImage: String,
-    val availabilityStatus: Boolean,
-    val consultationFee: Double,
-    val notificationPreferences: Boolean,
-    val docoument: List<String>,
-    val appointments: List<String>
-) {
-    // Add any additional methods or behavior specific to Doctor if needed
-}
+// Doctors data
 
-
-// Dummy Generator
-
-
-
+public val doctors_data = generateDummyDoctors(30)
 
 fun generateDummyDoctors(count: Int): List<Doctor> {
     val dummyDoctors = mutableListOf<Doctor>()
@@ -107,3 +87,63 @@ fun generateRandomAppointments(): List<String> {
     return appointmentDates
 }
 
+
+//Patient's Data
+
+fun generateDummyPatient(): Patient {
+    val patientID = Random.nextInt(1000)
+    val name = "Patient$patientID"
+    val gender = if (Random.nextBoolean()) true else false
+    val dateOfBirth = "2000-01-01" // Replace with your date format and logic
+    val medicalHistory = generateDummyAppointmentIds(5) // Change the number as needed
+    val contactNumber = "123-456-7890"
+    val email = "patient@gmail.com"
+    val profileImage = "https://example.com/profiles/$patientID.jpg"
+    val height = Random.nextDouble(150.0, 200.0)
+    val weight = Random.nextDouble(35.0, 200.0)
+    val notification = Random.nextBoolean()
+
+    return Patient(patientID, height, weight, name, gender, dateOfBirth, medicalHistory, contactNumber, email, profileImage, notification)
+}
+
+// Generate a list of dummy patients
+fun generateDummyPatients(count: Int): List<Patient> {
+    return List(count) { generateDummyPatient() }
+}
+
+// Generate a list of dummy Appointment IDs
+private fun generateDummyAppointmentIds(count: Int): List<String> {
+    return List(count) { UUID.randomUUID().toString() }
+}
+
+
+// Appointment
+
+fun generateDummyAppointment(): Appointment {
+    val appointmentId = UUID.randomUUID().toString()
+    val patientID = UUID.randomUUID().toString()
+    val doctorID = UUID.randomUUID().toString()
+    val prescriptionID = UUID.randomUUID().toString()
+    val appointmentDate = Date() // You may want to customize the date logic
+    val status = "Scheduled"
+    val rating = Random.nextInt(1, 6) // Generates a random rating between 1 and 5
+    val review = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    val notes = "Additional notes for the appointment."
+
+    return Appointment(
+        appointmentId,
+        patientID,
+        doctorID,
+        prescriptionID,
+        appointmentDate,
+        status,
+        rating,
+        review,
+        notes
+    )
+}
+
+// Generate a list of dummy appointments
+fun generateDummyAppointments(count: Int): List<Appointment> {
+    return List(count) { generateDummyAppointment() }
+}

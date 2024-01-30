@@ -1,12 +1,10 @@
 package com.example.doctors_appointment.ui.mainHome
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,9 +26,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.doctors_appointment.classes.Doctor
-import com.example.doctors_appointment.classes.generateDummyDoctors
-import com.example.doctors_appointment.ui.theme.Indigo50
+import com.example.doctors_appointment.data.model.Doctor
+import com.example.doctors_appointment.data.doctors_data
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
 
@@ -43,7 +40,7 @@ fun DoctorsPreview() {
         fontWeight = FontWeight.Bold,
         style = MaterialTheme.typography.labelLarge
     )
-    val availableDoctors = generateDummyDoctors(15)
+    val availableDoctors = doctors_data
     LazyRow{
         items(availableDoctors.size){
             DoctorsCard(availableDoctors[it])
