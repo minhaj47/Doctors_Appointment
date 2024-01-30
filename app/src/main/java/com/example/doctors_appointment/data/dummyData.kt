@@ -1,8 +1,10 @@
 package com.example.doctors_appointment.data
 
+import com.example.doctors_appointment.data.DummyDataGenerator.generateDummyPrescriptions
 import com.example.doctors_appointment.data.model.Appointment
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.model.Patient
+import com.example.doctors_appointment.data.model.Prescription
 import java.util.Date
 import java.util.UUID
 import kotlin.random.Random
@@ -10,6 +12,9 @@ import kotlin.random.Random
 // Doctors data
 
 public val doctors_data = generateDummyDoctors(30)
+public val patient_data = generateDummyPatient()
+public val appointments_data = generateDummyAppointments(30)
+public val prescriptions_data = generateDummyPrescriptions(30)
 
 fun generateDummyDoctors(count: Int): List<Doctor> {
     val dummyDoctors = mutableListOf<Doctor>()
@@ -146,4 +151,39 @@ fun generateDummyAppointment(): Appointment {
 // Generate a list of dummy appointments
 fun generateDummyAppointments(count: Int): List<Appointment> {
     return List(count) { generateDummyAppointment() }
+}
+
+
+// Prescription
+
+object DummyDataGenerator {
+
+    fun generateDummyPrescription(): Prescription {
+        val prescriptionId = UUID.randomUUID().toString()
+        val problem = "Lorem ipsum dolor sit amet."
+        val medications = generateDummyMedications()
+        val diagnosis = generateDummyDiagnosis()
+        val advice = "Lorem ipsum advice."
+
+        return Prescription(prescriptionId, problem, medications, diagnosis, advice)
+    }
+
+    private fun generateDummyMedications(): List<String> {
+        val medicationsCount = Random.nextInt(1, 5)
+        return List(medicationsCount) {
+            "Medication${it + 1}"
+        }
+    }
+
+    private fun generateDummyDiagnosis(): List<String> {
+        val diagnosisCount = Random.nextInt(1, 4)
+        return List(diagnosisCount) {
+            "Diagnosis${it + 1}"
+        }
+    }
+
+    // Generate a list of dummy prescriptions
+    fun generateDummyPrescriptions(count: Int): List<Prescription> {
+        return List(count) { generateDummyPrescription() }
+    }
 }

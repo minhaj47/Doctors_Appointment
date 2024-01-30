@@ -8,4 +8,7 @@ sealed class Screen(val route: String){
     object doctors: Screen("doctors")
     object appointment: Screen("appointment")
     object profile: Screen("profile")
+    object doctorsDetails: Screen("doctor's details page")
+    object catagoryDoctors: Screen("catagorically doctors page")
+
 }

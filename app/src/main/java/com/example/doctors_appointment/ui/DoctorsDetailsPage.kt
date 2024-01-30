@@ -54,9 +54,9 @@ import java.util.Date
 import kotlin.random.Random
 
 @Composable
-fun ProfilePage(navController: NavController) {
+fun DoctorsDetailsPage(navController: NavController) {
 
-    val patient = patient_data
+    val doctor: Doctor = doctors_data[Random.nextInt(0,29)]
 
     Column(
         modifier = Modifier
@@ -64,7 +64,7 @@ fun ProfilePage(navController: NavController) {
             .padding(10.dp),
     ) {
         Text(
-            text = "Profile",
+            text = "Doctor's Details",
             style = MaterialTheme.typography.headlineMedium,
             fontFamily = fontInria,
             color = Indigo900,
@@ -73,7 +73,7 @@ fun ProfilePage(navController: NavController) {
         )
         Column(
             modifier = Modifier
-                .height(155.dp)
+                .height(170.dp)
                 .fillMaxWidth()
             ,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -85,10 +85,18 @@ fun ProfilePage(navController: NavController) {
                 modifier = Modifier.height(80.dp)
             )
             Text(
-                text = patient.name,
+                text = "Dr. ${doctor.name}",
                 fontFamily = fontInria,
                 fontSize = 25.sp,
                 textAlign = TextAlign.Center
+            )
+
+            Text(
+                text = doctor.medicalSpecialty,
+                fontFamily = fontInria,
+                fontSize = 22.sp,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.SemiBold
             )
         }
         LazyColumn(
@@ -99,24 +107,8 @@ fun ProfilePage(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             item{
-                
-                Profile(patient)
-                
-                Spacer(modifier = Modifier.height(7.dp))
-                
-                Text(
-                    text = "Medical History:",
-                    fontSize = 25.sp,
-                    fontFamily = fontInria,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
 
-                Spacer(modifier = Modifier.height(7.dp))
-
-                for(item in patient.medicalHistory){
-                    AppointmentView(item)
-                }
+                DoctorsDetails(doctor)
 
             }
         }
@@ -127,8 +119,8 @@ fun ProfilePage(navController: NavController) {
 
 
 @Composable
-fun Profile(
-    patient:Patient
+fun DoctorsDetails(
+    doctor: Doctor
 ) {
     Box(
         modifier = Modifier
@@ -147,8 +139,9 @@ fun Profile(
                 .padding(start = 15.dp, top = 12.dp, end = 10.dp, bottom = 8.dp)
         ) {
 
+
             Text(
-                text = "Height",
+                text = "Address:",
                 fontSize = 19.sp,
                 fontFamily = fontInria,
                 color = Color.Black,
@@ -156,7 +149,7 @@ fun Profile(
             )
 
             Text(
-                text = patient.height.toString(),
+                text = doctor.address,
                 fontSize = 17.sp,
                 fontFamily = fontInria,
                 color = Indigo900
@@ -165,7 +158,7 @@ fun Profile(
             Spacer(modifier = Modifier.height(5.dp))
 
             Text(
-                text = "Weight",
+                text = "Contact No:",
                 fontSize = 19.sp,
                 fontFamily = fontInria,
                 color = Color.Black,
@@ -173,7 +166,24 @@ fun Profile(
             )
 
             Text(
-                text = patient.weight.toString(),
+                text = doctor.contactNumber,
+                fontSize = 17.sp,
+                fontFamily = fontInria,
+                color = Indigo900
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            Text(
+                text = "Email:",
+                fontSize = 19.sp,
+                fontFamily = fontInria,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = doctor.email,
                 fontSize = 17.sp,
                 fontFamily = fontInria,
                 color = Indigo900
@@ -190,7 +200,7 @@ fun Profile(
             )
 
             Text(
-                text = if(patient.gender) "Male" else "Female",
+                text = if(doctor.gender) "Male" else "Female",
                 fontSize = 17.sp,
                 fontFamily = fontInria,
                 color = Indigo900
@@ -199,25 +209,26 @@ fun Profile(
             Spacer(modifier = Modifier.height(5.dp))
 
             Text(
-                text = "Date of Birth:",
+                text = "Qualifications:",
                 fontSize = 19.sp,
                 fontFamily = fontInria,
                 color = Color.Black,
                 fontWeight = FontWeight.Bold
             )
 
-            Text(
-                text = patient.dateOfBirth,
-                fontSize = 17.sp,
-                fontFamily = fontInria,
-                color = Indigo900
-            )
-
+            for (item in doctor.qualifications){
+                Text(
+                    text = item,
+                    fontSize = 16.sp,
+                    fontFamily = fontInria,
+                    color = Indigo900
+                )
+            }
 
             Spacer(modifier = Modifier.height(5.dp))
 
             Text(
-                text = "Phone:",
+                text = "Specialities:",
                 fontSize = 19.sp,
                 fontFamily = fontInria,
                 color = Color.Black,
@@ -225,24 +236,7 @@ fun Profile(
             )
 
             Text(
-                text = patient.contactNumber,
-                fontSize = 17.sp,
-                fontFamily = fontInria,
-                color = Indigo900
-            )
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Text(
-                text = "Email Address:",
-                fontSize = 19.sp,
-                fontFamily = fontInria,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-
-            Text(
-                text = patient.email,
+                text = doctor.specialties,
                 fontSize = 17.sp,
                 fontFamily = fontInria,
                 color = Indigo900
@@ -251,7 +245,7 @@ fun Profile(
             Spacer(modifier = Modifier.height(5.dp))
 
             Text(
-                text = "Notification:",
+                text = "BMDC Registration No:",
                 fontSize = 19.sp,
                 fontFamily = fontInria,
                 color = Color.Black,
@@ -259,7 +253,7 @@ fun Profile(
             )
 
             Text(
-                text = patient.notification.toString(),
+                text = doctor.bmdcRegistrationNumber,
                 fontSize = 17.sp,
                 fontFamily = fontInria,
                 color = Indigo900
@@ -267,108 +261,4 @@ fun Profile(
 
         }
     }
-}
-
-
-@Composable
-fun AppointmentView(
-    appointmentID: String
-){
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(end = 15.dp, bottom = 5.dp, top = 5.dp)
-            .clip(RoundedCornerShape(10))
-            .border(2.dp, Indigo500, RoundedCornerShape(10))
-            .background(Color.White)
-        //.background(Indigo50)
-
-    ){
-
-        //prescription: Prescription = fetch data from database using appointment.prescriptionID
-
-        val prescription: Prescription = prescriptions_data[Random.nextInt(0,29)]
-        val appointment: Appointment = appointments_data[Random.nextInt(0,29)]
-
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 15.dp, top = 12.dp, end = 10.dp, bottom = 8.dp)
-        ) {
-
-            Text(
-                text = appointment.appointmentDate.toString(),
-                fontSize = 10.sp,
-                fontFamily = fontInria,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-            )
-            Spacer(modifier = Modifier.height(5.dp))
-            Text(
-                text = "Problem: ${prescription.problem}",
-                fontSize = 15.sp,
-                fontFamily = fontInria,
-                color = Indigo900,
-                fontWeight = FontWeight.SemiBold
-            )
-
-            Spacer(modifier = Modifier.height(3.dp))
-
-            Text(
-                text = "Diagnosis:",
-                fontSize = 11.sp,
-                fontFamily = fontInria,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-
-            for (item in prescription.diagnosis){
-                Text(
-                    text = item,
-                    fontSize = 13.sp,
-                    fontFamily = fontInria,
-                    color = Indigo900
-                )
-            }
-
-            Spacer(modifier = Modifier.height(3.dp))
-
-            Text(
-                text = "Medications:",
-                fontSize = 11.sp,
-                fontFamily = fontInria,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-
-            for (item in prescription.medications){
-                Text(
-                    text = item,
-                    fontSize = 12.sp,
-                    fontFamily = fontInria,
-                    color = Indigo900
-                )
-            }
-
-            Text(
-                text = "Advice:",
-                fontSize = 11.sp,
-                fontFamily = fontInria,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-
-            Text(
-                text = prescription.advice,
-                fontSize = 10.sp,
-                fontFamily = fontInria,
-                color = Color.Black
-            )
-
-
-        }
-    }
-
 }

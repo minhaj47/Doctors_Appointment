@@ -39,6 +39,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.doctors_appointment.data.model.Screen
 import com.example.doctors_appointment.ui.AppointmentPage
+import com.example.doctors_appointment.ui.CatagoryDoctorsPage
+import com.example.doctors_appointment.ui.DoctorsDetailsPage
 import com.example.doctors_appointment.ui.DoctorsPage
 import com.example.doctors_appointment.ui.ProfilePage
 import com.example.doctors_appointment.ui.theme.Indigo50
@@ -118,6 +120,14 @@ fun NavBar(
 
             composable(Screen.profile.route){
                 ProfilePage(navController = navController)
+            }
+
+            composable(Screen.doctorsDetails.route){
+                DoctorsDetailsPage(navController = navController)
+            }
+
+            composable(Screen.catagoryDoctors.route){
+                 CatagoryDoctorsPage(navController = navController, "Cancer")
             }
         }
 

@@ -2,6 +2,7 @@ package com.example.doctors_appointment.ui.mainHome
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,7 +23,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import com.example.doctors_appointment.R
+import com.example.doctors_appointment.data.model.Screen
 import com.example.doctors_appointment.ui.theme.Indigo50
 
 data class Category(
@@ -31,7 +35,7 @@ data class Category(
 )
 
 @Composable
-fun CatagoryRow(){
+fun CatagoryRow(navController: NavController){
 
     val categories = listOf(
         Category(
@@ -86,7 +90,8 @@ fun CatagoryRow(){
     LazyRow{
         items(categories.size){
             CatagoryCard(
-                categories[it]
+                categories[it],
+                navController
             )
         }
     }
@@ -94,7 +99,8 @@ fun CatagoryRow(){
 
 @Composable
 fun CatagoryCard(
-    category: Category
+    category: Category,
+    navController: NavController
 ) {
 
     Column(
@@ -102,7 +108,10 @@ fun CatagoryCard(
              .padding(top = 7.dp, bottom = 15.dp, end = 15.dp)
              .clip(RoundedCornerShape(10))
              .background(Indigo50)
-             .padding(15.dp),
+             .padding(15.dp)
+             .clickable {
+                 navController.navigate(Screen.catagoryDoctors.route)
+             },
          verticalArrangement = Arrangement.Center,
          horizontalAlignment = Alignment.CenterHorizontally
     ) {

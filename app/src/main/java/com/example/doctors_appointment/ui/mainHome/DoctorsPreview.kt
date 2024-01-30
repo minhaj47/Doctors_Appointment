@@ -1,6 +1,7 @@
 package com.example.doctors_appointment.ui.mainHome
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,14 +27,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.doctors_data
+import com.example.doctors_appointment.data.model.Screen
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
 
 
 @Composable
-fun DoctorsPreview() {
+fun DoctorsPreview(navController: NavController) {
     Text(
         text = " Doctors",
         fontFamily = fontInria,
@@ -43,14 +46,15 @@ fun DoctorsPreview() {
     val availableDoctors = doctors_data
     LazyRow{
         items(availableDoctors.size){
-            DoctorsCard(availableDoctors[it])
+            DoctorsCard(availableDoctors[it], navController)
         }
     }
 }
 
 @Composable
 fun DoctorsCard(
-    doctor: Doctor
+    doctor: Doctor,
+    navController: NavController
 ) {
     Box(
         modifier = Modifier
@@ -60,6 +64,9 @@ fun DoctorsCard(
             .clip(RoundedCornerShape(10))
             .border(2.dp, Indigo500, RoundedCornerShape(10))
             //.background(Indigo50)
+            .clickable {
+                navController.navigate(Screen.doctorsDetails.route)
+            }
 
     ){
 

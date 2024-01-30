@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -31,16 +30,16 @@ import androidx.navigation.NavController
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.doctors_data
 import com.example.doctors_appointment.data.model.Screen
-import com.example.doctors_appointment.ui.mainHome.NavBar
+import com.example.doctors_appointment.ui.mainHome.Category
 import com.example.doctors_appointment.ui.mainHome.fontInria
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.mainHome.NavigationViewModel
 
 @Composable
-fun DoctorsPage(
+fun CatagoryDoctorsPage(
     navController: NavController,
+    catagory: String
 ) {
 
     val doctors = doctors_data
@@ -55,7 +54,7 @@ fun DoctorsPage(
                 .padding(10.dp),
         ) {
             Text(
-                text = "Find your Doctor",
+                text = catagory.toString(),
                 style = MaterialTheme.typography.headlineMedium,
                 fontFamily = fontInria,
                 color = Indigo900,
@@ -67,7 +66,7 @@ fun DoctorsPage(
                     .padding(top = 5.dp, start = 5.dp, end = 5.dp, bottom = 65.dp)
             ){
                 items(doctors_data.size){
-                    DoctorsRow(doctor = doctors_data[it], navController)
+                    CatagoryDoctorsRow(doctor = doctors_data[it], navController)
                 }
             }
         }
@@ -77,7 +76,7 @@ fun DoctorsPage(
 
 
 @Composable
-fun DoctorsRow(
+fun CatagoryDoctorsRow(
     doctor: Doctor,
     navController: NavController
 ) {
@@ -88,7 +87,7 @@ fun DoctorsRow(
             .clip(RoundedCornerShape(10))
             .border(2.dp, Indigo500, RoundedCornerShape(10))
             .background(Color.White)
-        //.background(Indigo50)
+            //.background(Indigo50)
             .clickable {
                 navController.navigate(Screen.doctorsDetails.route)
             }
@@ -108,12 +107,7 @@ fun DoctorsRow(
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
-            Text(
-                text = doctor.medicalSpecialty,
-                fontSize = 10.sp,
-                fontFamily = fontInria,
-                color = Indigo900
-            )
+
             Text(
                 text = "Qualifications:",
                 fontSize = 12.sp,
