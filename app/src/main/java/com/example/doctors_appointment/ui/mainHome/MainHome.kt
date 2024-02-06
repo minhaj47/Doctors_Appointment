@@ -56,7 +56,7 @@ fun MainHome(navController: NavController){
 
         FeaturedItems()
 
-        CatagoryRow(navController)
+        CategoryRow(navController)
 
         DoctorsPreview(navController)
 

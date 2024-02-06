@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,7 +34,7 @@ data class Category(
 )
 
 @Composable
-fun CatagoryRow(navController: NavController){
+fun CategoryRow(navController: NavController){
 
     val categories = listOf(
         Category(
@@ -89,7 +88,7 @@ fun CatagoryRow(navController: NavController){
 
     LazyRow{
         items(categories.size){
-            CatagoryCard(
+            CategoryCard(
                 categories[it],
                 navController
             )
@@ -98,7 +97,7 @@ fun CatagoryRow(navController: NavController){
 }
 
 @Composable
-fun CatagoryCard(
+fun CategoryCard(
     category: Category,
     navController: NavController
 ) {
@@ -110,7 +109,7 @@ fun CatagoryCard(
              .background(Indigo50)
              .padding(15.dp)
              .clickable {
-                 navController.navigate(Screen.catagoryDoctors.route)
+                 navController.navigate(Screen.catagoryDoctors.route + "/${category.name}")
              },
          verticalArrangement = Arrangement.Center,
          horizontalAlignment = Alignment.CenterHorizontally

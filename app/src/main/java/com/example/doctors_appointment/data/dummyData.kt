@@ -5,6 +5,7 @@ import com.example.doctors_appointment.data.model.Appointment
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.model.Patient
 import com.example.doctors_appointment.data.model.Prescription
+import java.sql.Array
 import java.util.Date
 import java.util.UUID
 import kotlin.random.Random
@@ -32,14 +33,15 @@ fun generateDummyDoctors(count: Int): List<Doctor> {
                 reviews = generateRandomReviews(),
                 bmdcRegistrationNumber = "BMDC${it + 1}",
                 qualifications = generateRandomQualifications(),
-                specialties = "Specialty${Random.nextInt(1, 6)}",
+                about = "about ${Random.nextInt(1, 6)}" + generateRandomAddress() + generateRandomName() + generateRandomEmail() + generateDummyAppointments(5),
                 medicalSpecialty = "MedicalSpecialty${Random.nextInt(1, 4)}",
                 profileImage = "profile_image_$it.jpg",
-                availabilityStatus = Random.nextBoolean(),
+                availabilityStatus = Array(60) {Random.nextBoolean()},
                 consultationFee = Random.nextDouble(50.0, 300.0),
                 notificationPreferences = Random.nextBoolean(),
                 docoument = generateRandomDocuments(),
-                appointments = generateRandomAppointments()
+                appointments = generateRandomAppointments(),
+                experience = Random.nextInt(0,100)
             )
         )
     }

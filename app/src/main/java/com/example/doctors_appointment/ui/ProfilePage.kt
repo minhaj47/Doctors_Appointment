@@ -47,6 +47,7 @@ import com.example.doctors_appointment.data.patient_data
 import com.example.doctors_appointment.data.prescriptions_data
 import com.example.doctors_appointment.ui.mainHome.RoundImage
 import com.example.doctors_appointment.ui.mainHome.fontInria
+import com.example.doctors_appointment.ui.theme.Indigo200
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
@@ -65,11 +66,15 @@ fun ProfilePage(navController: NavController) {
     ) {
         Text(
             text = "Profile",
-            style = MaterialTheme.typography.headlineMedium,
+            fontSize = 20.sp,
             fontFamily = fontInria,
-            color = Indigo900,
+            color = Color.White,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
+                .padding(start = 50.dp, end = 50.dp)
+                .clip(RoundedCornerShape(50))
+                .background(Indigo200)
+                .padding(5.dp)
         )
         Column(
             modifier = Modifier
@@ -133,18 +138,18 @@ fun Profile(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(end = 15.dp, bottom = 5.dp, top = 5.dp)
+            .padding(10.dp)
             .clip(RoundedCornerShape(5))
             .border(2.dp, Indigo500, RoundedCornerShape(5))
             .background(Color.White)
-        //.background(Indigo50)
 
     ){
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 15.dp, top = 12.dp, end = 10.dp, bottom = 8.dp)
+                .padding(start = 15.dp, top = 12.dp, end = 10.dp, bottom = 8.dp),
+            verticalArrangement = Arrangement.Center
         ) {
 
             Text(
@@ -278,7 +283,7 @@ fun AppointmentView(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(end = 15.dp, bottom = 5.dp, top = 5.dp)
+            .padding(10.dp)
             .clip(RoundedCornerShape(10))
             .border(2.dp, Indigo500, RoundedCornerShape(10))
             .background(Color.White)
@@ -295,7 +300,8 @@ fun AppointmentView(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 15.dp, top = 12.dp, end = 10.dp, bottom = 8.dp)
+                .padding(start = 15.dp, top = 12.dp, end = 10.dp, bottom = 8.dp),
+            verticalArrangement = Arrangement.Center
         ) {
 
             Text(

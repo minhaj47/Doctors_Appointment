@@ -1,8 +1,6 @@
 package com.example.doctors_appointment.ui.mainHome
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarViewMonth
@@ -28,25 +26,24 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.doctors_appointment.data.model.Screen
 import com.example.doctors_appointment.ui.AppointmentPage
 import com.example.doctors_appointment.ui.CatagoryDoctorsPage
 import com.example.doctors_appointment.ui.DoctorsDetailsPage
 import com.example.doctors_appointment.ui.DoctorsPage
 import com.example.doctors_appointment.ui.ProfilePage
+import com.example.doctors_appointment.ui.booking.BookSchedule
+import com.example.doctors_appointment.ui.booking.FinalBooking
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.mainHome.NavigationViewModel
-import com.example.doctors_appointment.ui.theme.Indigo100
 
 data class BottomNavigationItem(
     val title: String,
@@ -126,8 +123,48 @@ fun NavBar(
                 DoctorsDetailsPage(navController = navController)
             }
 
-            composable(Screen.catagoryDoctors.route){
-                 CatagoryDoctorsPage(navController = navController, "Cancer")
+            composable(
+                route = Screen.catagoryDoctors.route + "/{category}",
+                arguments = listOf(
+                    navArgument("category"){
+                        type = NavType.StringType
+                        defaultValue = "Heart"
+                        nullable = true
+                    }
+                )
+            ){entry ->
+                 CatagoryDoctorsPage(navController = navController, category =  entry.arguments?.getString("category"))
+            }
+
+            composable(
+                route = Screen.booking1.route + "/{doctorId}",
+                arguments = listOf(
+                    navArgument("doctorId"){
+                        type = NavType.StringType
+                        defaultValue = "Doctor1"
+                        nullable = true
+                    }
+                )
+            ){
+                BookSchedule(navController = navController, doctorId = it.arguments?.getString("doctorId"))
+            }
+
+            composable(
+                route = Screen.finalBooking.route + "/{doctorId}/{slotNo}",
+                arguments = listOf(
+                    navArgument("doctorId"){
+                        type = NavType.StringType
+                        defaultValue = "Doctor1"
+                        nullable = true
+                    },
+                    navArgument("slotNo"){
+                        type = NavType.StringType
+                        defaultValue = "0"
+                        nullable = true
+                    }
+                )
+            ){
+                FinalBooking(navController = navController, doctorId = it.arguments?.getString("doctorId"), slotNo = it.arguments?.getString("slotNo")!!.toInt())
             }
         }
 

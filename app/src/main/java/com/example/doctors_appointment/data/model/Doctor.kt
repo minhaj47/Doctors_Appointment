@@ -14,12 +14,13 @@ class Doctor(
     val reviews: List<String>,
     val bmdcRegistrationNumber: String,
     val qualifications: List<String>,
-    val specialties: String,
+    val about: String,
     val medicalSpecialty: String,
     val profileImage: String,
-    val availabilityStatus: Boolean,
+    val availabilityStatus: Array<Boolean>,
     val consultationFee: Double,
     val notificationPreferences: Boolean,
+    val experience: Int,
     val docoument: List<String>,
     val appointments: List<String>
 ) {
