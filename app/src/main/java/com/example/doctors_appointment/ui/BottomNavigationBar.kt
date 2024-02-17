@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.ui.mainHome
+package com.example.doctors_appointment.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,16 +34,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.doctors_appointment.data.model.Screen
-import com.example.doctors_appointment.ui.AppointmentPage
-import com.example.doctors_appointment.ui.CatagoryDoctorsPage
-import com.example.doctors_appointment.ui.DoctorsDetailsPage
-import com.example.doctors_appointment.ui.DoctorsPage
-import com.example.doctors_appointment.ui.ProfilePage
+import com.example.doctors_appointment.util.Screen
+import com.example.doctors_appointment.data.repository.MongoRepository
 import com.example.doctors_appointment.ui.booking.BookSchedule
 import com.example.doctors_appointment.ui.booking.FinalBooking
+import com.example.doctors_appointment.ui.mainHome.MainHome
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo900
+import com.example.doctors_appointment.ui.viewmodel.BookingViewModel
+import com.example.doctors_appointment.ui.viewmodel.MainHomeViewModel
+import com.example.doctors_appointment.ui.viewmodel.OthersViewModel
 
 data class BottomNavigationItem(
     val title: String,
@@ -57,8 +57,17 @@ data class BottomNavigationItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavBar(
-    //navController: NavController,          // we will use an independent navcontroller for this bar navigation for simplicity
+    repository: MongoRepository
 ) {
+
+    // viewModel Initialization
+
+    val othersViewModel = OthersViewModel(repository)
+    val bookingViewModel = BookingViewModel(repository)
+    val mainHomeViewModel = MainHomeViewModel(repository)
+
+
+
     val items = listOf(
 
         BottomNavigationItem(
@@ -91,7 +100,7 @@ fun NavBar(
         )
     )
 
-    var navController = rememberNavController()
+    val navController = rememberNavController()
 
     Scaffold(
         bottomBar = {
@@ -104,23 +113,34 @@ fun NavBar(
             startDestination = Screen.mainHome.route
         ){
             composable(Screen.mainHome.route){
-                MainHome(navController = navController)
+                MainHome(navController = navController, mainHomeViewModel = mainHomeViewModel)
             }
 
             composable(Screen.doctors.route){
-                DoctorsPage(navController = navController)
+                DoctorsPage(navController = navController, othersViewModel = othersViewModel)
             }
 
             composable(Screen.appointment.route){
-                AppointmentPage(navController = navController)
+                AppointmentPage(othersViewModel = othersViewModel)
             }
 
             composable(Screen.profile.route){
-                ProfilePage(navController = navController)
+                ProfilePage(navController = navController, othersViewModel = othersViewModel)
             }
 
-            composable(Screen.doctorsDetails.route){
-                DoctorsDetailsPage(navController = navController)
+            composable(
+                route = Screen.doctorsDetails.route + "/{doctorId}",
+                arguments = listOf(
+                    navArgument("doctorId"){
+                        type = NavType.StringType
+                        defaultValue = ""
+                        nullable = true
+                    }
+                )
+                ){ entry ->
+                entry.arguments?.getString("doctorId")?.let {
+                    it1 -> DoctorsDetailsPage(navController = navController, doctorId = it1, othersViewModel)
+                }
             }
 
             composable(
@@ -133,7 +153,7 @@ fun NavBar(
                     }
                 )
             ){entry ->
-                 CatagoryDoctorsPage(navController = navController, category =  entry.arguments?.getString("category"))
+                 CatagoryDoctorsPage(navController = navController, category =  entry.arguments?.getString("category"), othersViewModel)
             }
 
             composable(
@@ -146,25 +166,25 @@ fun NavBar(
                     }
                 )
             ){
-                BookSchedule(navController = navController, doctorId = it.arguments?.getString("doctorId"))
+                BookSchedule(
+                    navController = navController,
+                    doctorId = it.arguments?.getString("doctorId"),
+                    bookingViewModel = bookingViewModel
+                )
             }
 
             composable(
-                route = Screen.finalBooking.route + "/{doctorId}/{slotNo}",
-                arguments = listOf(
-                    navArgument("doctorId"){
-                        type = NavType.StringType
-                        defaultValue = "Doctor1"
-                        nullable = true
-                    },
-                    navArgument("slotNo"){
-                        type = NavType.StringType
-                        defaultValue = "0"
-                        nullable = true
-                    }
-                )
+                route = Screen.finalBooking.route
+//                        + "/{appointmentId}",
+//                arguments = listOf(
+//                    navArgument("appointmentId"){
+//                        type = NavType.StringType
+//                        defaultValue = "appointment1"
+//                        nullable = false
+//                    }
+//                )
             ){
-                FinalBooking(navController = navController, doctorId = it.arguments?.getString("doctorId"), slotNo = it.arguments?.getString("slotNo")!!.toInt())
+                FinalBooking(navController = navController, bookingViewModel = bookingViewModel)
             }
         }
 

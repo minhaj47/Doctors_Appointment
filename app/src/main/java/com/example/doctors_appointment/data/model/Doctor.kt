@@ -1,28 +1,32 @@
 package com.example.doctors_appointment.data.model
 
-import androidx.room.Entity
+import io.realm.kotlin.ext.realmListOf
+import io.realm.kotlin.types.RealmList
+import io.realm.kotlin.types.RealmObject
+import io.realm.kotlin.types.annotations.Index
+import io.realm.kotlin.types.annotations.PrimaryKey
+import org.mongodb.kbson.ObjectId
+class Doctor : RealmObject {
+    @PrimaryKey
+    var _id: ObjectId = ObjectId()
+    var name: String = ""
+    var email: String = ""
+    var password: String = ""
+    var contactNumber: String = ""
+    var notification: Boolean? = null
 
-@Entity
-class Doctor(
-    val doctorID: String,
-    val name: String,
-    val gender: Boolean, // true for male and false for female
-    val contactNumber: String,
-    val email: String,
-    val address: String,
-    val rating: Double,
-    val reviews: List<String>,
-    val bmdcRegistrationNumber: String,
-    val qualifications: List<String>,
-    val about: String,
-    val medicalSpecialty: String,
-    val profileImage: String,
-    val availabilityStatus: Array<Boolean>,
-    val consultationFee: Double,
-    val notificationPreferences: Boolean,
-    val experience: Int,
-    val docoument: List<String>,
-    val appointments: List<String>
-) {
-    // Add any additional methods or behavior specific to Doctor if needed
+    var gender: Boolean? = null // true for male and false for female
+    var address: String = ""
+    var rating: Double = 0.0
+    var reviews: RealmList<String> = realmListOf()
+    var bmdcRegistrationNumber: String = ""
+    var qualifications: RealmList<String> = realmListOf()
+    var about: String = ""
+    @Index var medicalSpecialty: String = ""
+    var profileImage: String = ""
+    var availabilityStatus: RealmList<Boolean> = realmListOf(*List(60){ true }.toTypedArray())
+    var consultationFee: Double = 0.0
+    var experience: Int = 0
+    var docoument: RealmList<String> = realmListOf()
+    var appointments: RealmList<Appointment> = realmListOf()
 }

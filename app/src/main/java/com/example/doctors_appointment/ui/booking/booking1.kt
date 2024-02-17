@@ -1,7 +1,6 @@
 package com.example.doctors_appointment.ui.booking
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Today
@@ -26,34 +24,39 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.doctors_appointment.data.doctors_data
 import com.example.doctors_appointment.data.model.Doctor
-import com.example.doctors_appointment.data.model.Screen
-import com.example.doctors_appointment.ui.mainHome.BottomNavigationItem
-import com.example.doctors_appointment.ui.mainHome.fontActor
+import com.example.doctors_appointment.util.Screen
+import com.example.doctors_appointment.ui.BottomNavigationItem
 import com.example.doctors_appointment.ui.mainHome.fontInria
 import com.example.doctors_appointment.ui.theme.Indigo400
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo900
-import java.util.Date
+import com.example.doctors_appointment.ui.viewmodel.BookingViewModel
+import io.realm.kotlin.ext.realmListOf
+import kotlin.random.Random
 
 @Composable
 fun BookSchedule(
     doctorId: String?,
-    navController: NavController
+    navController: NavController,
+    bookingViewModel: BookingViewModel
 ) {
+
+    if (doctorId != null) {
+        bookingViewModel.getDoctorFromId(doctorId)
+    }
+
+    val doctor = bookingViewModel.doctor1
 
     Column(
         modifier = Modifier
@@ -63,10 +66,8 @@ fun BookSchedule(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-
-        val doctor = doctors_data[0]
-
         Spacer(modifier = Modifier.height(40.dp))
+
 
         Text(
             text = "SCHEDULE APPOINTMENT",
@@ -160,7 +161,7 @@ fun BookSchedule(
             horizontalArrangement = Arrangement.SpaceAround
         ){
             for(i in 0..2){
-                Slot(12*(selectedTabIndex) + i, doctor, selectedSlot){
+                Slot(12*(selectedTabIndex) + i, doctor, selectedSlot, bookingViewModel){
                     selectedSlot = it
                 }
             }
@@ -173,7 +174,7 @@ fun BookSchedule(
             horizontalArrangement = Arrangement.SpaceAround,
         ){
             for(i in 3..5){
-                Slot(12*(selectedTabIndex) + i, doctor, selectedSlot){
+                Slot(12*(selectedTabIndex) + i, doctor, selectedSlot, bookingViewModel){
                     selectedSlot = it
                 }
             }
@@ -195,7 +196,7 @@ fun BookSchedule(
             horizontalArrangement = Arrangement.SpaceAround
         ){
             for(i in 6..8){
-                Slot(12*(selectedTabIndex) + i, doctor, selectedSlot){
+                Slot(12*(selectedTabIndex) + i, doctor, selectedSlot, bookingViewModel){
                     selectedSlot = it
                 }
             }
@@ -208,7 +209,7 @@ fun BookSchedule(
             horizontalArrangement = Arrangement.SpaceAround
         ){
             for(i in 9..11){
-                Slot(12*(selectedTabIndex) + i, doctor, selectedSlot){
+                Slot(12*(selectedTabIndex) + i, doctor, selectedSlot, bookingViewModel){
                     selectedSlot = it
                 }
             }
@@ -217,8 +218,11 @@ fun BookSchedule(
 
         OutlinedButton(
             onClick = {
-                if(selectedSlot != -1)
-                    navController.navigate(Screen.finalBooking.withArgs(doctorId.toString(), selectedSlot.toString()))
+                if(selectedSlot != -1){
+                    bookingViewModel.createAppointment(selectedSlot)
+                    navController.navigate(Screen.finalBooking.route)
+                }
+
             }
         ) {
             Text(
@@ -234,6 +238,7 @@ fun Slot(
     slotNo: Int,
     doctor: Doctor,
     selectedSlot: Int,
+    bookingViewModel: BookingViewModel,
     onSlotSelect: (Int) -> Unit     // Callback to notify parent when a slot is selected
 ) {
     Button(
@@ -250,21 +255,7 @@ fun Slot(
         )
     ) {
         Text(
-            text = when (slotNo % 12) {
-                0 -> "9.30"
-                1 -> "10.00"
-                2 -> "10.30"
-                3 -> "11.00"
-                4 -> "11.30"
-                5 -> "12.00"
-                6 -> "6.30"
-                7 -> "7.00"
-                8 -> "7.30"
-                9 -> "8.00"
-                10 -> "8.30"
-                11 -> "9.00"
-                else -> "undefined"
-            }
+            text = bookingViewModel.getTime(slotNo%12).toString()
         )
     }
 }

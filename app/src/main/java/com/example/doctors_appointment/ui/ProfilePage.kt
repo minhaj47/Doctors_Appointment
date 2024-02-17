@@ -1,63 +1,48 @@
 package com.example.doctors_appointment.ui
 
-import android.service.autofill.FillEventHistory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.doctors_appointment.MyApp
 import com.example.doctors_appointment.R
-import com.example.doctors_appointment.data.appointments_data
-import com.example.doctors_appointment.data.doctors_data
-import com.example.doctors_appointment.data.generateDummyDoctors
-import com.example.doctors_appointment.data.generateDummyPatient
-import com.example.doctors_appointment.data.model.Appointment
-import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.model.Patient
 import com.example.doctors_appointment.data.model.Prescription
-import com.example.doctors_appointment.data.patient_data
-import com.example.doctors_appointment.data.prescriptions_data
 import com.example.doctors_appointment.ui.mainHome.RoundImage
 import com.example.doctors_appointment.ui.mainHome.fontInria
 import com.example.doctors_appointment.ui.theme.Indigo200
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
-import java.util.Date
-import kotlin.random.Random
+import com.example.doctors_appointment.ui.viewmodel.OthersViewModel
 
 @Composable
-fun ProfilePage(navController: NavController) {
+fun ProfilePage(
+    navController: NavController,
+    othersViewModel: OthersViewModel
+) {
 
-    val patient = patient_data
+    val patient = MyApp.patient
 
     Column(
         modifier = Modifier
@@ -70,7 +55,8 @@ fun ProfilePage(navController: NavController) {
             fontFamily = fontInria,
             color = Color.White,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(start = 50.dp, end = 50.dp)
                 .clip(RoundedCornerShape(50))
                 .background(Indigo200)
@@ -195,7 +181,7 @@ fun Profile(
             )
 
             Text(
-                text = if(patient.gender) "Male" else "Female",
+                text = if(patient.gender == null){ "Unknown" } else if(patient.gender == true){ "Male" } else "Female",
                 fontSize = 17.sp,
                 fontFamily = fontInria,
                 color = Indigo900
@@ -277,7 +263,7 @@ fun Profile(
 
 @Composable
 fun AppointmentView(
-    appointmentID: String
+    prescription: Prescription
 ){
 
     Box(
@@ -291,12 +277,6 @@ fun AppointmentView(
 
     ){
 
-        //prescription: Prescription = fetch data from database using appointment.prescriptionID
-
-        val prescription: Prescription = prescriptions_data[Random.nextInt(0,29)]
-        val appointment: Appointment = appointments_data[Random.nextInt(0,29)]
-
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -305,12 +285,13 @@ fun AppointmentView(
         ) {
 
             Text(
-                text = appointment.appointmentDate.toString(),
+                text = prescription.appointment?.appointmentDate?.toString() ?: "Unknown",
                 fontSize = 10.sp,
                 fontFamily = fontInria,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
             )
+
             Spacer(modifier = Modifier.height(5.dp))
             Text(
                 text = "Problem: ${prescription.problem}",

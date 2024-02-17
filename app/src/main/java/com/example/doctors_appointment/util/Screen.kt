@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.data.model
+package com.example.doctors_appointment.util
 
 sealed class Screen(val route: String){
     object home: Screen("home")

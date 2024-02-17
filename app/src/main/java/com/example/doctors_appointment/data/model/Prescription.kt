@@ -1,13 +1,22 @@
 package com.example.doctors_appointment.data.model
 
-import androidx.room.Entity
+import io.realm.kotlin.ext.realmListOf
 import java.util.*
+import io.realm.kotlin.types.EmbeddedRealmObject
+import io.realm.kotlin.types.RealmList
 
-@Entity
-class Prescription(
-    val prescriptionId: String = UUID.randomUUID().toString(),
-    val problem: String,
-    val medications: List<String>,
-    val diagnosis: List<String>,
-    val advice: String
-)
+// Appointment (one to one) -> Prescription
+// hence no need of id for prescription
+
+class Prescription: EmbeddedRealmObject{
+    var appointment: Appointment? = null
+    var problem: String = ""
+    var medications: RealmList<String> = realmListOf()
+    var diagnosis: RealmList<String> = realmListOf()
+    var advice: String = ""
+}
+
+
+
+
+

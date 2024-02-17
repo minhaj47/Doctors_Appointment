@@ -1,6 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'io.realm.kotlin'
+    id 'kotlin-kapt'
+    id "com.google.dagger.hilt.android"
 }
 
 android {
@@ -44,6 +47,17 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+
+
+    kapt {
+        correctErrorTypes = true
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
 }
 
 dependencies {
@@ -68,5 +82,22 @@ dependencies {
 
     implementation 'androidx.compose.material:material-icons-extended-android:1.6.0'
     implementation 'androidx.navigation:navigation-compose:2.7.6'
+
+    //realm
+    implementation 'io.realm.kotlin:library-base:1.13.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
+//    implementation 'io.realm.kotlin:library-sync:1.6.0'
+
+    // Dagger Hilt
+    implementation 'com.google.dagger:hilt-android:2.44'
+    kapt 'com.google.dagger:hilt-android-compiler:2.44'
+    implementation 'androidx.hilt:hilt-navigation-compose:1.1.0'
+
+
+    // Message bar compose
+    implementation 'com.github.stevdza-san:MessageBarCompose:1.0.5'
+
+    // One tap Compose
+    implementation 'com.github.stevdza-san:OneTapCompose:1.0.0'
 
 }

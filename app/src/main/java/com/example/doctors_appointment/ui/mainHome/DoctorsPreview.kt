@@ -20,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -29,21 +30,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.data.model.Doctor
-import com.example.doctors_appointment.data.doctors_data
-import com.example.doctors_appointment.data.model.Screen
+import com.example.doctors_appointment.data.repository.MongoRepository
+import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
+import com.example.doctors_appointment.ui.viewmodel.MainHomeViewModel
 
 
 @Composable
-fun DoctorsPreview(navController: NavController) {
+fun DoctorsPreview(
+    navController: NavController,
+    mainhomeViewModel: MainHomeViewModel
+) {
+
+    val availableDoctors = mainhomeViewModel.doctors.value
+
     Text(
         text = " Doctors",
         fontFamily = fontInria,
         fontWeight = FontWeight.Bold,
         style = MaterialTheme.typography.labelLarge
     )
-    val availableDoctors = doctors_data
+
     LazyRow{
         items(availableDoctors.size){
             DoctorsCard(availableDoctors[it], navController)
@@ -65,7 +73,7 @@ fun DoctorsCard(
             .border(2.dp, Indigo500, RoundedCornerShape(10))
             //.background(Indigo50)
             .clickable {
-                navController.navigate(Screen.doctorsDetails.route)
+                navController.navigate(Screen.doctorsDetails.withArgs(doctor._id.toHexString()))
             }
 
     ){

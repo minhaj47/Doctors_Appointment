@@ -24,18 +24,20 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.doctors_appointment.R
-import com.example.doctors_appointment.data.model.Screen
+import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.ui.theme.Indigo50
+import com.example.doctors_appointment.ui.viewmodel.MainHomeViewModel
 
 data class Category(
     val name: String,
-    //val doctors: Array<Doctor>,
     val icon: Painter
 )
 
 @Composable
-fun CategoryRow(navController: NavController){
-
+fun CategoryRow(
+    navController: NavController,
+    mainHomeViewModel: MainHomeViewModel
+){
     val categories = listOf(
         Category(
             name = "Heart",
@@ -90,7 +92,7 @@ fun CategoryRow(navController: NavController){
         items(categories.size){
             CategoryCard(
                 categories[it],
-                navController
+                navController,
             )
         }
     }
@@ -109,7 +111,7 @@ fun CategoryCard(
              .background(Indigo50)
              .padding(15.dp)
              .clickable {
-                 navController.navigate(Screen.catagoryDoctors.route + "/${category.name}")
+                 navController.navigate(Screen.catagoryDoctors.withArgs(category.name))
              },
          verticalArrangement = Arrangement.Center,
          horizontalAlignment = Alignment.CenterHorizontally
@@ -126,8 +128,4 @@ fun CategoryCard(
              fontSize = 12.sp
          )
     }
-}
-
-class NavigationViewModel: ViewModel(){
-    var selectedItemIndex: Int = 0
 }

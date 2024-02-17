@@ -30,7 +30,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.R
+import com.example.doctors_appointment.data.repository.MongoRepository
+import com.example.doctors_appointment.ui.NavBar
 import com.example.doctors_appointment.ui.theme.Indigo50
+import com.example.doctors_appointment.ui.viewmodel.MainHomeViewModel
 
 var fontInria = FontFamily(
     Font(R.font.inriasans_regular, FontWeight.Normal),
@@ -42,7 +45,10 @@ var fontActor = FontFamily(
 )
 
 @Composable
-fun MainHome(navController: NavController){
+fun MainHome(
+    navController: NavController,
+    mainHomeViewModel: MainHomeViewModel
+){
 
     Column(
         modifier = Modifier
@@ -56,9 +62,9 @@ fun MainHome(navController: NavController){
 
         FeaturedItems()
 
-        CategoryRow(navController)
+        CategoryRow(navController, mainHomeViewModel)
 
-        DoctorsPreview(navController)
+        DoctorsPreview(navController, mainHomeViewModel)
 
     }
 }
@@ -89,7 +95,8 @@ fun TopBar(
         Icon(
             imageVector = Icons.Default.Notifications,
             contentDescription = "notification",
-            modifier = Modifier.size(30.dp)
+            modifier = Modifier
+                .size(30.dp)
                 .padding(end = 10.dp)
         )
 

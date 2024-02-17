@@ -1,6 +1,5 @@
 package com.example.doctors_appointment.ui
 
-import android.service.autofill.FillEventHistory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -18,18 +17,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Details
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Upcoming
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Details
-import androidx.compose.material.icons.outlined.Done
-import androidx.compose.material.icons.outlined.Upcoming
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -41,12 +34,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -54,18 +43,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.navigation.NavController
 import com.example.doctors_appointment.R
-import com.example.doctors_appointment.data.appointments_data
-import com.example.doctors_appointment.data.doctors_data
-import com.example.doctors_appointment.data.generateDummyDoctors
-import com.example.doctors_appointment.data.generateDummyPatient
-import com.example.doctors_appointment.data.model.Appointment
 import com.example.doctors_appointment.data.model.Doctor
-import com.example.doctors_appointment.data.model.Patient
-import com.example.doctors_appointment.data.model.Prescription
-import com.example.doctors_appointment.data.model.Screen
-import com.example.doctors_appointment.data.patient_data
-import com.example.doctors_appointment.data.prescriptions_data
-import com.example.doctors_appointment.ui.mainHome.BottomNavigationItem
+import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.ui.mainHome.RoundImage
 import com.example.doctors_appointment.ui.mainHome.fontActor
 import com.example.doctors_appointment.ui.mainHome.fontInria
@@ -73,15 +52,18 @@ import com.example.doctors_appointment.ui.theme.Indigo200
 import com.example.doctors_appointment.ui.theme.Indigo400
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo500
-import com.example.doctors_appointment.ui.theme.Indigo700
 import com.example.doctors_appointment.ui.theme.Indigo900
-import java.util.Date
-import kotlin.random.Random
+import com.example.doctors_appointment.ui.viewmodel.OthersViewModel
 
 @Composable
-fun DoctorsDetailsPage(navController: NavController) {
+fun DoctorsDetailsPage(
+    navController: NavController,
+    doctorId: String,
+    othersViewModel: OthersViewModel
+) {
 
-    val doctor: Doctor = doctors_data[0]
+    othersViewModel.getDoctorFromId(doctorId)
+    val doctor = othersViewModel.doctor
 
     Column(
         modifier = Modifier
@@ -154,7 +136,7 @@ fun DoctorsDetailsPage(navController: NavController) {
 
             Button(
                 onClick = {
-                    navController.navigate(Screen.booking1.withArgs(doctor.doctorID))
+                    navController.navigate(Screen.booking1.withArgs(doctor._id.toHexString()))
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Indigo400,
@@ -320,7 +302,7 @@ fun DoctorsDetails(
             )
 
             Text(
-                text = if(doctor.gender) "Male" else "Female",
+                text = if(doctor.gender!!) "Male" else "Female",
                 fontSize = 17.sp,
                 fontFamily = fontInria,
                 color = Indigo900

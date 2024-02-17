@@ -24,16 +24,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.R
-import com.example.doctors_appointment.data.model.Screen
+import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.ui.theme.*
 
 @Composable
-fun homePage(navController: NavController){
+fun HomePage(navController: NavController){
 
-    var fontActor = FontFamily(
+    val fontActor = FontFamily(
         Font(R.font.actor)
     )
-    var fontInria = FontFamily(
+    val fontInria = FontFamily(
         Font(R.font.inriasans_regular, FontWeight.Normal),
         Font(R.font.inriasans_bold, FontWeight.Bold),
         Font(R.font.inriasans_light, FontWeight.Light)

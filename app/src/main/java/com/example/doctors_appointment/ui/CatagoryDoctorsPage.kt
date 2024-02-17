@@ -30,22 +30,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.data.model.Doctor
-import com.example.doctors_appointment.data.doctors_data
-import com.example.doctors_appointment.data.model.Screen
-import com.example.doctors_appointment.ui.mainHome.fontActor
+import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.ui.mainHome.fontInria
 import com.example.doctors_appointment.ui.theme.Indigo400
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
+import com.example.doctors_appointment.ui.viewmodel.OthersViewModel
 
 @Composable
 fun CatagoryDoctorsPage(
     navController: NavController,
-    category: String? = "Heart"
+    category: String?,
+    othersViewModel: OthersViewModel
 ) {
 
-    val doctors = doctors_data
+    if (category != null) {
+        othersViewModel.getDoctorFromCategory(category)
+    }else{
+        navController.popBackStack()
+    }
+
+    val categoryDoctors = othersViewModel.categoryDoctors.value
+
 
     Box(
         modifier = Modifier
@@ -73,8 +80,8 @@ fun CatagoryDoctorsPage(
                     .padding(bottom = 65.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                items(doctors_data.size){
-                    CategoryDoctorsRow(doctor = doctors_data[it], navController)
+                items(categoryDoctors.size){
+                    CategoryDoctorsRow(doctor = categoryDoctors[it], navController)
                 }
             }
         }
@@ -187,7 +194,7 @@ fun CategoryDoctorsRow(
 
                 Button(
                     onClick = {
-                        navController.navigate(Screen.doctorsDetails.route)
+                        navController.navigate(Screen.doctorsDetails.withArgs(doctor._id.toHexString()))
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Indigo400,

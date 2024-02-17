@@ -1,19 +1,23 @@
 package com.example.doctors_appointment.data.model
 
-import androidx.room.Entity
-import java.util.Date
-import java.util.UUID
+import io.realm.kotlin.types.RealmObject
+import io.realm.kotlin.types.annotations.PrimaryKey
+import org.mongodb.kbson.ObjectId
 
-@Entity
-class Appointment(
-    val appointmentId: String = UUID.randomUUID().toString(),
-    val patientID: String,
-    val doctorID: String,
-    val prescriptionID: String,
-    val appointmentDate: Date,
-    val status: String,
-    val rating: Int,
-    val review: String,
-    val notes: String
-)
 
+class Appointment: RealmObject{
+    @PrimaryKey var _id: ObjectId = ObjectId()
+    var patientId: String = ""
+    var doctorID: String = ""
+    var prescription: Prescription? = Prescription()
+    var appointmentDate: Long? = null
+    var status: String = ""
+    var rating: Int = 0
+    var review: String = ""
+    var notes: String = ""
+//    var owner_id: String = ""
+//
+//    constructor(ownerId: String) {
+//        owner_id = ownerId
+//    }
+}

@@ -1,5 +1,7 @@
 package com.example.doctors_appointment.ui
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,9 +16,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
@@ -24,29 +31,50 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.doctors_appointment.R
-import com.example.doctors_appointment.data.model.Screen
+import com.example.doctors_appointment.ui.mainHome.fontActor
+import com.example.doctors_appointment.ui.mainHome.fontInria
+import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.ui.theme.Indigo100
 import com.example.doctors_appointment.ui.theme.Indigo900
+import com.example.doctors_appointment.util.UiEvent
+import com.example.doctors_appointment.ui.viewmodel.SignInViewModel
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun signIn(navController: NavController){
+fun SignIn(
+    navController: NavController,
+    signInViewModel: SignInViewModel
+){
 
-    var fontInria = FontFamily(
-        Font(R.font.inriasans_regular, FontWeight.Normal),
-        Font(R.font.inriasans_bold, FontWeight.Bold),
-        Font(R.font.inriasans_light, FontWeight.Light)
-    )
-    var fontActor = FontFamily(
-        Font(R.font.actor)
-    )
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) }
+    ) {
+
+        // handling one time event received from viewmodel
+
+        LaunchedEffect(key1 = true){
+            signInViewModel.uiEvents.collect{ event ->
+                when(event) {
+                    is UiEvent.Navigate -> {
+                        Log.d("dfkl", "login navigate")
+                        navController.navigate(event.route)
+                    }
+                    is UiEvent.ShowSnackBar -> {
+                        snackBarHostState.showSnackbar(message = event.massage, duration = SnackbarDuration.Short)
+                    }
+                    else -> Log.d("alfkj", "ui event are not working")
+                }
+            }
+        }
+    }
+
 
 
     Column(
@@ -103,13 +131,13 @@ fun signIn(navController: NavController){
 //            textStyle = LocalTextStyle.current.copy(
 //                textAlign = TextAlign.Center
 //            ),
-            suffix = {
-                     Text(text = "@gmail.com")
-            },
+//            suffix = {
+//                     Text(text = "@gmail.com")
+//            },
 //            supportingText = {
 //                Text(text = "*required")
 //            },
-//            isError = true
+            isError = false
         )
 
         Spacer(
@@ -131,7 +159,8 @@ fun signIn(navController: NavController){
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Outlined.Password,
-                    contentDescription = "Pass" )
+                    contentDescription = "Pass"
+                )
             },
 //            textStyle = LocalTextStyle.current.copy(
 //                textAlign = TextAlign.Center
@@ -143,7 +172,7 @@ fun signIn(navController: NavController){
 
         Button(
             onClick = {
-                navController.navigate(Screen.mainHome.route)
+                 signInViewModel.OnEvent(UiEvent.Login(filledMail, filledPass))
             },
             modifier = Modifier
                 .height(50.dp)
@@ -174,8 +203,8 @@ fun signIn(navController: NavController){
         )
         TextButton(
             onClick = {
-                      navController.navigate(Screen.signUp.route)
-                      },
+                navController.navigate(Screen.signUp.route)
+            },
             modifier = Modifier
                 .width(80.dp)
                 .height(40.dp)
