@@ -43,16 +43,27 @@ open class MongoRepoImplementation(
     }
     override suspend fun updateDoctor(doctor: Doctor) {
         realm.write {
-            val queriedDoctor = realm.query<Doctor>(query = "_id == $0", doctor._id).first().find()
+            val queriedDoctor = this.query<Doctor>(query = "_id == $0", doctor._id).first().find()
+
             queriedDoctor?.name = doctor.name
             queriedDoctor?.qualifications = doctor.qualifications
             queriedDoctor?.address = doctor.address
             queriedDoctor?.about = doctor.about
-//            queriedDoctor?.name = doctor.name
-//            queriedDoctor?.name = doctor.name
-//            queriedDoctor?.name = doctor.name
-//            queriedDoctor?.name = doctor.name
-//            queriedDoctor?.name = doctor.name
+            queriedDoctor?.appointments = doctor.appointments
+            queriedDoctor?.availabilityStatus = doctor.availabilityStatus
+            queriedDoctor?.bmdcRegistrationNumber = doctor.bmdcRegistrationNumber
+            queriedDoctor?.contactNumber = doctor.contactNumber
+            queriedDoctor?.docoument = doctor.docoument
+            queriedDoctor?.rating = doctor.rating
+            queriedDoctor?.consultationFee = doctor.consultationFee
+            queriedDoctor?.reviews = doctor.reviews
+            queriedDoctor?.experience = doctor.experience
+            queriedDoctor?.email = doctor.email
+            queriedDoctor?.medicalSpecialty= doctor.medicalSpecialty
+            queriedDoctor?.profileImage = doctor.profileImage
+            queriedDoctor?.notification = doctor.notification
+
+            queriedDoctor?.password = doctor.password
 
         }
     }
@@ -129,12 +140,13 @@ open class MongoRepoImplementation(
             queriedPatient?.height = patient.height
             queriedPatient?.weight = patient.weight
             queriedPatient?.contactNumber = patient.contactNumber
-//            queriedPatient?.contactNumber = patient.contactNumber
-//            queriedPatient?.contactNumber = patient.contactNumber
-//            queriedPatient?.contactNumber = patient.contactNumber
-//            queriedPatient?.contactNumber = patient.contactNumber
-//            queriedPatient?.contactNumber = patient.contactNumber
+            queriedPatient?.email = patient.email
+            queriedPatient?.medicalHistory = patient.medicalHistory
+            queriedPatient?.dateOfBirth = patient.dateOfBirth
+            queriedPatient?.notification = patient.notification
+            queriedPatient?.profileImage = patient.profileImage
 
+            queriedPatient?.password = patient.password
         }
     }
 
@@ -142,14 +154,14 @@ open class MongoRepoImplementation(
 
     override suspend fun getPastAppointmentsOfUser(): Flow<List<Appointment>> {
 
-        val userId = MyApp.patient._id.toHexString()
+        val userId = MyApp.patient._id
 
         val localDateTime = LocalDateTime.now()
         val date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant())
         val milliseconds = date.time
 
         return realm
-            .query<Appointment>("patientId == $0 AND appointmentDate < $1", userId, milliseconds)
+            .query<Appointment>("@links.Patient.medicalHistory._id == $0 AND appointmentDate < $1", userId, milliseconds)
             .asFlow()
             .map {
                 it.list
@@ -159,13 +171,13 @@ open class MongoRepoImplementation(
 
     override suspend fun getUpcomingAppointmentsOfUser(): Flow<List<Appointment>> {
 
-        val userId = MyApp.patient._id.toHexString()
+        val userId = MyApp.patient._id
 
         val localDateTime = LocalDateTime.now()
         val date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant())
         val milliseconds = date.time
         return realm
-            .query<Appointment>("patientId == $0 AND appointmentDate >= $1", userId, milliseconds)
+            .query<Appointment>("@links.Patient.medicalHistory._id == $0 AND appointmentDate >= $1", userId, milliseconds)
             .asFlow()
             .map {
                 it.list
@@ -176,6 +188,20 @@ open class MongoRepoImplementation(
             copyToRealm(appointment)
         }
     }
+
+    override suspend fun setAppointment(
+        doctor: Doctor,
+        patient: Patient,
+        appointment: Appointment
+    ) {
+        realm.write {
+
+            findLatest(doctor)?.appointments?.add(appointment)
+
+            findLatest(patient)?.medicalHistory?.add(appointment)
+        }
+    }
+
     override suspend fun deleteAppointment(appointment: Appointment) {
 
         realm.write {

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.MyApp
 import com.example.doctors_appointment.R
+import com.example.doctors_appointment.data.model.Appointment
 import com.example.doctors_appointment.data.model.Patient
 import com.example.doctors_appointment.data.model.Prescription
 import com.example.doctors_appointment.ui.mainHome.RoundImage
@@ -263,8 +264,9 @@ fun Profile(
 
 @Composable
 fun AppointmentView(
-    prescription: Prescription
+    appointment: Appointment
 ){
+    val prescription = appointment.prescription
 
     Box(
         modifier = Modifier
@@ -284,22 +286,26 @@ fun AppointmentView(
             verticalArrangement = Arrangement.Center
         ) {
 
-            Text(
-                text = prescription.appointment?.appointmentDate?.toString() ?: "Unknown",
-                fontSize = 10.sp,
-                fontFamily = fontInria,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-            )
+            if (prescription != null) {
+                Text(
+                    text = prescription.appointment?.appointmentDate?.toString() ?: "Unknown",
+                    fontSize = 10.sp,
+                    fontFamily = fontInria,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                )
+            }
 
             Spacer(modifier = Modifier.height(5.dp))
-            Text(
-                text = "Problem: ${prescription.problem}",
-                fontSize = 15.sp,
-                fontFamily = fontInria,
-                color = Indigo900,
-                fontWeight = FontWeight.SemiBold
-            )
+            if (prescription != null) {
+                Text(
+                    text = "Problem: ${prescription.problem}",
+                    fontSize = 15.sp,
+                    fontFamily = fontInria,
+                    color = Indigo900,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
 
             Spacer(modifier = Modifier.height(3.dp))
 
@@ -311,13 +317,15 @@ fun AppointmentView(
                 fontWeight = FontWeight.Bold
             )
 
-            for (item in prescription.diagnosis){
-                Text(
-                    text = item,
-                    fontSize = 13.sp,
-                    fontFamily = fontInria,
-                    color = Indigo900
-                )
+            if (prescription != null) {
+                for (item in prescription.diagnosis){
+                    Text(
+                        text = item,
+                        fontSize = 13.sp,
+                        fontFamily = fontInria,
+                        color = Indigo900
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(3.dp))
@@ -330,13 +338,15 @@ fun AppointmentView(
                 fontWeight = FontWeight.Bold
             )
 
-            for (item in prescription.medications){
-                Text(
-                    text = item,
-                    fontSize = 12.sp,
-                    fontFamily = fontInria,
-                    color = Indigo900
-                )
+            if (prescription != null) {
+                for (item in prescription.medications){
+                    Text(
+                        text = item,
+                        fontSize = 12.sp,
+                        fontFamily = fontInria,
+                        color = Indigo900
+                    )
+                }
             }
 
             Text(
@@ -347,12 +357,14 @@ fun AppointmentView(
                 fontWeight = FontWeight.Bold
             )
 
-            Text(
-                text = prescription.advice,
-                fontSize = 10.sp,
-                fontFamily = fontInria,
-                color = Color.Black
-            )
+            if (prescription != null) {
+                Text(
+                    text = prescription.advice,
+                    fontSize = 10.sp,
+                    fontFamily = fontInria,
+                    color = Color.Black
+                )
+            }
 
 
         }

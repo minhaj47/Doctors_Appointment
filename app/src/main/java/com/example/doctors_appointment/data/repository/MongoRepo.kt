@@ -26,6 +26,8 @@ interface MongoRepository {
     suspend fun getUpcomingAppointmentsOfUser(): Flow<List<Appointment>>
     suspend fun getPastAppointmentsOfUser(): Flow<List<Appointment>>
     suspend fun insertAppointment(appointment: Appointment)
+
+    suspend fun setAppointment(doctor: Doctor, patient: Patient, appointment: Appointment)
     suspend fun deleteAppointment(appointment: Appointment)
     suspend fun getCategoryDoctor(category: String): Flow<List<Doctor>>
 }

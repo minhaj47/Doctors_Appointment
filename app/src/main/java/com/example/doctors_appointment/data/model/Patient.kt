@@ -22,6 +22,6 @@ class Patient: RealmObject {
     var weight: Double = 0.0
     var gender: Boolean? = null
     var dateOfBirth: String = ""
-    var medicalHistory: RealmList<Prescription> = realmListOf()
+    var medicalHistory: RealmList<Appointment> = realmListOf()
     var profileImage: String = ""
 }

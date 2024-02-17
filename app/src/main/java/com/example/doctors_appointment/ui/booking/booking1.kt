@@ -219,7 +219,7 @@ fun BookSchedule(
         OutlinedButton(
             onClick = {
                 if(selectedSlot != -1){
-                    bookingViewModel.createAppointment(selectedSlot)
+                    bookingViewModel.setDateTime(selectedSlot)
                     navController.navigate(Screen.finalBooking.route)
                 }
 

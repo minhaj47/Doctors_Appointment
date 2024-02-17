@@ -8,6 +8,7 @@ import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.model.Prescription
 import com.example.doctors_appointment.data.repository.MongoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.realm.kotlin.Realm
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -31,8 +32,6 @@ class BookingViewModel @Inject constructor(
         }
     }
 
-
-
 //    fun getAppointmentFromId(userId: String){
 //
 //        viewModelScope.launch {
@@ -40,11 +39,9 @@ class BookingViewModel @Inject constructor(
 //        }
 //    }
 
-    fun createAppointment(slotNo: Int): Appointment{
+    fun setDateTime(slotNo: Int): Appointment{
 
         appointment.apply {
-            doctorID = doctor1._id.toHexString()
-            patientId = user._id.toHexString()
             appointment.appointmentDate = getAppointmentTime(slotNo)
         }
 
@@ -88,12 +85,8 @@ class BookingViewModel @Inject constructor(
 
     fun onConfirm() {
         viewModelScope.launch {
-            println(appointment.toString())
-            println(getDoctorFromId(appointment.doctorID))
-            println(appointment.patientId)
-            println(appointment.appointmentDate)
-            println(appointment.prescription.toString())
-            repository.insertAppointment(appointment)
+            repository.setAppointment(doctor1, user, appointment)
+            appointment = Appointment()
         }
     }
 }
