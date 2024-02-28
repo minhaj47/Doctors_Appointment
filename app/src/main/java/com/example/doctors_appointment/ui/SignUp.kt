@@ -223,7 +223,7 @@ fun SignUp(
 
         Button(
             onClick = {
-                signUpViewModel.OnEvent(UiEvent.SignUp(filledMail,filledName,filledPass, filledPass1, true))
+                signUpViewModel.OnSignUpClick(filledMail, filledName,filledPass, filledPass1, true)
             },
             modifier = Modifier
                 .height(50.dp)
@@ -245,7 +245,7 @@ fun SignUp(
 
         OutlinedButton(
             onClick = {
-                signUpViewModel.OnEvent(UiEvent.SignUp(filledMail,filledName,filledPass, filledPass1, false))
+                signUpViewModel.OnSignUpClick(filledMail,filledName,filledPass, filledPass1, false)
             },
             modifier = Modifier
                 .height(50.dp)

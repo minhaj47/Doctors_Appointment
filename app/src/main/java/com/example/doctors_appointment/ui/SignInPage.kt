@@ -172,7 +172,7 @@ fun SignIn(
 
         Button(
             onClick = {
-                 signInViewModel.OnEvent(UiEvent.Login(filledMail, filledPass))
+                 signInViewModel.OnLoginClick(filledMail, filledPass)
             },
             modifier = Modifier
                 .height(50.dp)

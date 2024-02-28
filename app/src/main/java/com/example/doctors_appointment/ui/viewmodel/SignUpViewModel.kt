@@ -7,7 +7,9 @@ import com.example.doctors_appointment.MyApp
 import com.example.doctors_appointment.MyApp.Companion.realm
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.model.Patient
+import com.example.doctors_appointment.data.repository.AuthRepository
 import com.example.doctors_appointment.data.repository.MongoRepository
+import com.example.doctors_appointment.util.Resource
 import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
     private val repository: MongoRepository
 ): ViewModel() {
 
@@ -26,26 +29,42 @@ class SignUpViewModel @Inject constructor(
 
     val uiEvents = _uiEvents.receiveAsFlow()                   // immutable to use in the outside viewModel (UI) for collecting the flow
 
-    fun OnEvent(event: UiEvent){
-        when(event){
-            is UiEvent.SignUp -> {
-                if(event.password != event.confirmPassword){
-                    sendUiEvent(UiEvent.ShowSnackBar("Entered passwords are not same!"))
-                }else if(event.name == "" || event.email == ""){
-                    sendUiEvent(UiEvent.ShowSnackBar("Your name or email could not be empty!"))
-                }else if(event.password.length < 8){
-                    sendUiEvent(UiEvent.ShowSnackBar("Password is too short"))
-                }else{
-                    if(event.asPatient){
-                        createPatient(event.name, event.email, event.password)
-                    }else{
-                        createDoctor(event.name, event.email, event.password)
+    fun OnSignUpClick(email: String, name:String, password: String, confirmPassword: String, asPatient: Boolean){
+
+        if(password != confirmPassword){
+            sendUiEvent(UiEvent.ShowSnackBar("Entered passwords are not same!"))
+        }else if(name == "" || email == ""){
+            sendUiEvent(UiEvent.ShowSnackBar("Your name or email could not be empty!"))
+        }else if(password.length < 8){
+            sendUiEvent(UiEvent.ShowSnackBar("Password is too short"))
+        }else{
+            viewModelScope.launch {
+                authRepository.registerUser(email, password).collect{ result ->
+                    when(result){
+                        is Resource.Success -> {
+                            if(asPatient){
+                                createPatient(name, email, password)
+                            }else{
+                                createDoctor(name, email, password)
+                            }
+                            sendUiEvent(UiEvent.Navigate(Screen.signIn.route))
+                            sendUiEvent(UiEvent.ShowSnackBar("Sign Up Successful. Please Login."))
+                        }
+                        is Resource.Loading -> {
+                            sendUiEvent(UiEvent.ShowSnackBar("Wait for a while to register an user."))
+                        }
+                        is Resource.Error -> {
+                            println("error inside signup" + result.message)
+                            sendUiEvent(UiEvent.ShowSnackBar("Authentication failed"))
+                        }
                     }
-                    sendUiEvent(UiEvent.Navigate(Screen.signIn.route))
+
                 }
             }
-            else -> Unit
+
+
         }
+
     }
 
     private fun createPatient(

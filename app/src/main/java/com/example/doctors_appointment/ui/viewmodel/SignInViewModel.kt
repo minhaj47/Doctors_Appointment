@@ -11,18 +11,24 @@ import com.example.doctors_appointment.MyApp
 import com.example.doctors_appointment.MyApp.Companion.realm
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.model.Patient
+import com.example.doctors_appointment.data.repository.AuthRepository
+import com.example.doctors_appointment.data.repository.AuthRepositoryImpl
 import com.example.doctors_appointment.data.repository.MongoRepository
+import com.example.doctors_appointment.util.Resource
 import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.realm.kotlin.ext.query
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
     private val repository: MongoRepository
 ): ViewModel() {
      // One Time events receives flow One to one
@@ -31,25 +37,37 @@ class SignInViewModel @Inject constructor(
 
     val uiEvents = _uiEvents.receiveAsFlow()                   // immutable to use in the outside viewModel (UI) for collecting the flow
 
-    fun OnEvent(event: UiEvent){
-        when(event){
-            is UiEvent.Login -> {
+    fun OnLoginClick(email: String, password: String){
 
-                val doctor = auThenticateUserAsDoctor(event.email, event.password)
-                val patient = auThenticateUserAsPatient(event.email, event.password)
+        // firebase authentication
 
-                if (doctor != null) {
-                    sendUiEvent(UiEvent.ShowSnackBar("login as a patient."))
-                } else if (patient != null) {
-                    MyApp.patient = patient
-                    sendUiEvent(UiEvent.Navigate(Screen.mainHome.route))
-                } else {
-                    Log.d("slf", "both are null")
-                    sendUiEvent(UiEvent.ShowSnackBar("Invalid email or password."))
+        viewModelScope.launch {
+            authRepository.loginUser(email, password).collect{ result ->
+                when(result){
+                    is Resource.Success -> {
+
+                        val doctor = auThenticateUserAsDoctor(email, password)
+                        val patient = auThenticateUserAsPatient(email, password)
+
+                        if (doctor != null) {
+                            MyApp.doctor = doctor
+//                            sendUiEvent(UiEvent.Navigate(Screen.fkldflk.route))
+                            sendUiEvent(UiEvent.ShowSnackBar("login as a patient."))
+                        } else if (patient != null) {
+                            MyApp.patient = patient
+                            sendUiEvent(UiEvent.Navigate(Screen.mainHome.route))
+                        }
+
+                    }
+                    is Resource.Loading -> {
+                        sendUiEvent(UiEvent.ShowSnackBar("Wait for a while for authentication."))
+                    }
+                    is Resource.Error -> {
+                        sendUiEvent(UiEvent.ShowSnackBar("Invalid email or password."))
+                    }
                 }
-            }
 
-            else -> Unit
+            }
         }
     }
 

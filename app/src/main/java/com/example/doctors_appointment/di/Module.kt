@@ -5,8 +5,11 @@ import com.example.doctors_appointment.data.model.Appointment
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.model.Patient
 import com.example.doctors_appointment.data.model.Prescription
+import com.example.doctors_appointment.data.repository.AuthRepository
+import com.example.doctors_appointment.data.repository.AuthRepositoryImpl
 import com.example.doctors_appointment.data.repository.MongoRepoImplementation
 import com.example.doctors_appointment.data.repository.MongoRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,5 +49,15 @@ object DatabaseModule{
     @Provides
     fun provideMongoRepo(realm: Realm): MongoRepository{
         return MongoRepoImplementation(realm)
+    }
+
+    @Provides
+    @Singleton
+    fun providesFirebaseAuth() = FirebaseAuth.getInstance()
+
+    @Provides
+    @Singleton
+    fun providesAuthRepositoryImp(firebaseAuth: FirebaseAuth) : AuthRepository{
+        return AuthRepositoryImpl(firebaseAuth)
     }
 }
