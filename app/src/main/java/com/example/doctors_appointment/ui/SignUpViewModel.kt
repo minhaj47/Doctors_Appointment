@@ -1,19 +1,14 @@
-package com.example.doctors_appointment.ui.viewmodel
+package com.example.doctors_appointment.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.doctors_appointment.MyApp
-import com.example.doctors_appointment.MyApp.Companion.realm
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.model.Patient
 import com.example.doctors_appointment.data.repository.AuthRepository
-import com.example.doctors_appointment.data.repository.MongoRepository
 import com.example.doctors_appointment.util.Resource
 import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.realm.kotlin.ext.query
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -22,7 +17,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val repository: MongoRepository
 ): ViewModel() {
 
     private val _uiEvents = Channel<UiEvent>()                  // mutable hence made private(so that no one can change it outside the viewmodel) for sending event
@@ -50,13 +44,17 @@ class SignUpViewModel @Inject constructor(
                             sendUiEvent(UiEvent.Navigate(Screen.signIn.route))
                             sendUiEvent(UiEvent.ShowSnackBar("Sign Up Successful. Please Login."))
                         }
+
                         is Resource.Loading -> {
                             sendUiEvent(UiEvent.ShowSnackBar("Wait for a while to register an user."))
                         }
+
                         is Resource.Error -> {
                             println("error inside signup" + result.message)
-                            sendUiEvent(UiEvent.ShowSnackBar("Authentication failed"))
+                            sendUiEvent(UiEvent.ShowSnackBar("Authentication failed."))
                         }
+
+                        else -> {}
                     }
 
                 }
@@ -78,8 +76,9 @@ class SignUpViewModel @Inject constructor(
         patient.email = email
         patient.password = password
 
+        val signUpOp = SignUpOp()
         viewModelScope.launch {
-            repository.insertPatient(patient)
+            signUpOp.insertPatient(patient)
         }
         return patient
     }
@@ -95,8 +94,9 @@ class SignUpViewModel @Inject constructor(
         doctor.email = email
         doctor.password = password
 
+        val signUpOp = SignUpOp()
         viewModelScope.launch {
-            repository.insertDoctor(doctor)
+            signUpOp.insertDoctor(doctor)
         }
         return doctor
     }

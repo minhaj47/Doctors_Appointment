@@ -1,6 +1,5 @@
-package com.example.doctors_appointment.ui.viewmodel
+package com.example.doctors_appointment.ui.patientsUI.viewmodels
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,19 +9,15 @@ import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.model.Patient
 import com.example.doctors_appointment.data.repository.MongoRepository
 import com.example.doctors_appointment.util.ProfileEvent
-import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class OthersViewModel @Inject constructor(
+class OthersViewModel(
     private val repository: MongoRepository
-): ViewModel() {
+) : ViewModel() {
 
     var doctors = mutableStateOf(emptyList<Doctor>())
     var categoryDoctors = mutableStateOf(emptyList<Doctor>())

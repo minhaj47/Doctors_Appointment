@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.ui.mainHome
+package com.example.doctors_appointment.ui.patientsUI.mainHome
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,12 +21,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.doctors_appointment.R
 import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.ui.theme.Indigo50
-import com.example.doctors_appointment.ui.viewmodel.MainHomeViewModel
+import com.example.doctors_appointment.ui.patientsUI.viewmodels.MainHomeViewModel
 
 data class Category(
     val name: String,

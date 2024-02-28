@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.ui
+package com.example.doctors_appointment.ui.patientsUI
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,7 +31,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,15 +51,14 @@ import com.example.doctors_appointment.MyApp
 import com.example.doctors_appointment.R
 import com.example.doctors_appointment.data.model.Appointment
 import com.example.doctors_appointment.data.model.Patient
-import com.example.doctors_appointment.ui.mainHome.RoundImage
-import com.example.doctors_appointment.ui.mainHome.fontInria
+import com.example.doctors_appointment.ui.patientsUI.mainHome.RoundImage
+import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
 import com.example.doctors_appointment.ui.theme.Indigo200
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.viewmodel.OthersViewModel
+import com.example.doctors_appointment.ui.patientsUI.viewmodels.OthersViewModel
 import com.example.doctors_appointment.util.ProfileEvent
-import com.example.doctors_appointment.util.Screen
 
 @Composable
 fun ProfilePage(

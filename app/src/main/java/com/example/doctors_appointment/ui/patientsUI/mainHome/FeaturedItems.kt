@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.ui.mainHome
+package com.example.doctors_appointment.ui.patientsUI.mainHome
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

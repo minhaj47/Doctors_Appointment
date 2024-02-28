@@ -6,10 +6,17 @@ import com.example.doctors_appointment.data.model.Appointment
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.model.Patient
 import com.example.doctors_appointment.data.model.Prescription
+import com.example.doctors_appointment.util.Constants
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.ext.realmListOf
+import io.realm.kotlin.log.LogLevel
+import io.realm.kotlin.mongodb.App
+import io.realm.kotlin.mongodb.Credentials
+import io.realm.kotlin.mongodb.sync.SyncConfiguration
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -25,16 +32,62 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+object MongoRepoImplementation : MongoRepository {
 
-open class MongoRepoImplementation(
-    val realm: Realm
-    ): MongoRepository {
+    private lateinit var realm: Realm
 
-    override suspend fun insertDoctor(doctor: Doctor){
+    init {
+        configureTheRealm()
+    }
+
+    val user = MyApp.authenticatedUser
+    override fun configureTheRealm() {
+
+        if (user != null) {
+            val config = SyncConfiguration.Builder(
+                user,
+                setOf(
+                    Doctor::class,
+                    Patient::class,
+                    Appointment::class,
+                    Prescription::class
+                )
+            ).initialSubscriptions { sub ->
+                add(query = sub.query<Patient>())
+                add(query = sub.query<Doctor>())
+            }.build()
+            realm = Realm.open(config)
+        }
+    }
+
+    override fun auThenticateUserAsPatient(email: String, password: String): Patient? {
+
+        //Log.d("entered as patient", "entered to auth patient")
+
+        val user = realm
+            .query<Patient>("email == $0 and password == $1", email, password)
+            .first()
+            .find()
+        //if(user is Patient) Log.d("entered as patient", "auth patient successful")
+        return user
+    }
+
+    override fun auThenticateUserAsDoctor(email: String, password: String): Doctor? {
+        val user = realm
+            .query<Doctor>("email == $0 and password == $1", email, password)
+            .first()
+            .find()
+        Log.d("entered as doctor", "auth  doctor done")
+        return user
+    }
+
+
+    override suspend fun insertDoctor(doctor: Doctor) {
         realm.write {
             copyToRealm(doctor)
         }
     }
+
     override suspend fun deleteDoctor(doctor: Doctor) {
 
         realm.write {
@@ -50,6 +103,7 @@ open class MongoRepoImplementation(
         }
 
     }
+
     override suspend fun updateDoctor(doctor: Doctor) {
         realm.write {
             try {
@@ -131,6 +185,7 @@ open class MongoRepoImplementation(
             copyToRealm(patient)
         }
     }
+
     override suspend fun deletePatient(patient: Patient) {
 
         realm.write {
@@ -181,7 +236,6 @@ open class MongoRepoImplementation(
 
         }
     }
-
 
 
 //    override suspend fun updatePatient(patient: Patient) {
@@ -261,6 +315,7 @@ open class MongoRepoImplementation(
                 it.list
             }
     }
+
     override suspend fun insertAppointment(appointment: Appointment){
         realm.write {
             copyToRealm(appointment)

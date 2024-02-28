@@ -37,13 +37,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.doctors_appointment.ui.mainHome.fontActor
-import com.example.doctors_appointment.ui.mainHome.fontInria
+import com.example.doctors_appointment.ui.patientsUI.mainHome.fontActor
+import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
 import com.example.doctors_appointment.ui.theme.Indigo100
 import com.example.doctors_appointment.ui.theme.Indigo900
 import com.example.doctors_appointment.util.UiEvent
-import com.example.doctors_appointment.ui.viewmodel.SignInViewModel
-import com.example.doctors_appointment.ui.viewmodel.SignUpViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable

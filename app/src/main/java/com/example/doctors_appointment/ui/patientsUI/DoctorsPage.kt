@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.ui
+package com.example.doctors_appointment.ui.patientsUI
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,43 +31,32 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.util.Screen
-import com.example.doctors_appointment.ui.mainHome.fontInria
-import com.example.doctors_appointment.ui.theme.Indigo400
+import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.viewmodel.OthersViewModel
+import com.example.doctors_appointment.ui.theme.Indigo400
+import com.example.doctors_appointment.ui.patientsUI.viewmodels.OthersViewModel
 
 @Composable
-fun CatagoryDoctorsPage(
+fun DoctorsPage(
     navController: NavController,
-    category: String?,
     othersViewModel: OthersViewModel
 ) {
 
-    if (category != null) {
-        othersViewModel.getDoctorFromCategory(category)
-    }else{
-        navController.popBackStack()
-    }
-
-    val categoryDoctors = othersViewModel.categoryDoctors.value
-
+    val doctors = othersViewModel.doctors
 
     Box(
         modifier = Modifier
             .fillMaxSize()
     ){
-
         Column(
             modifier = Modifier
                 .background(Indigo50)
-                .fillMaxWidth()
                 .padding(10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = category.toString(),
+                text = "Find your Doctor",
                 style = MaterialTheme.typography.headlineMedium,
                 fontFamily = fontInria,
                 color = Indigo900,
@@ -76,22 +65,18 @@ fun CatagoryDoctorsPage(
             )
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 65.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(top = 5.dp, start = 5.dp, end = 5.dp, bottom = 65.dp)
             ){
-                items(categoryDoctors.size){
-                    CategoryDoctorsRow(doctor = categoryDoctors[it], navController)
+                items(doctors.value.size){
+                    DoctorsRow(doctor = doctors.value[it], navController)
                 }
             }
         }
     }
-
 }
 
-
 @Composable
-fun CategoryDoctorsRow(
+fun DoctorsRow(
     doctor: Doctor,
     navController: NavController
 ) {
@@ -102,7 +87,7 @@ fun CategoryDoctorsRow(
             .clip(RoundedCornerShape(10))
             .border(2.dp, Indigo500, RoundedCornerShape(10))
             .background(Color.White)
-        //.background(Indigo50)
+            //.background(Indigo50)
 
     ){
 
@@ -125,7 +110,12 @@ fun CategoryDoctorsRow(
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
-
+                Text(
+                    text = doctor.medicalSpecialty,
+                    fontSize = 10.sp,
+                    fontFamily = fontInria,
+                    color = Indigo900
+                )
                 Text(
                     text = "Qualifications:",
                     fontSize = 12.sp,
@@ -158,7 +148,7 @@ fun CategoryDoctorsRow(
 
             }
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(.8f)
             ) {
                 Text(
@@ -203,8 +193,8 @@ fun CategoryDoctorsRow(
                 ) {
                     Text(
                         text = "Details",
-                        fontWeight = FontWeight.Bold,
                         fontFamily = fontInria,
+                        fontWeight = FontWeight.Bold
                     )
                 }
 

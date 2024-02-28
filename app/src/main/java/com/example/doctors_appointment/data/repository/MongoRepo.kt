@@ -1,5 +1,6 @@
 package com.example.doctors_appointment.data.repository
 
+import android.util.Log
 import com.example.doctors_appointment.data.model.Appointment
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.model.Patient
@@ -9,7 +10,7 @@ import org.mongodb.kbson.ObjectId
 
 interface MongoRepository {
 
-    //fun configureTheRealm()
+    fun configureTheRealm()
 
     suspend fun insertDoctor(doctor: Doctor)
     suspend fun deleteDoctor(doctor: Doctor)
@@ -30,4 +31,8 @@ interface MongoRepository {
     suspend fun setAppointment(doctor: Doctor, patient: Patient, appointment: Appointment)
     suspend fun deleteAppointment(appointment: Appointment)
     suspend fun getCategoryDoctor(category: String): Flow<List<Doctor>>
+
+    fun auThenticateUserAsPatient(email: String, password: String): Patient?
+
+    fun auThenticateUserAsDoctor(email: String, password: String): Doctor?
 }

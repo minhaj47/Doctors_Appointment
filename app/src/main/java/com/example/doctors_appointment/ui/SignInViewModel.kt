@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.ui.viewmodel
+package com.example.doctors_appointment.ui
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -8,7 +8,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.doctors_appointment.MyApp
-import com.example.doctors_appointment.MyApp.Companion.realm
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.model.Patient
 import com.example.doctors_appointment.data.repository.AuthRepository
@@ -19,6 +18,8 @@ import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.realm.kotlin.ext.query
+import io.realm.kotlin.mongodb.Credentials
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectIndexed
@@ -29,9 +30,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val repository: MongoRepository
 ): ViewModel() {
-     // One Time events receives flow One to one
 
     private val _uiEvents = Channel<UiEvent>()                  // mutable hence made private(so that no one can change it outside the viewmodel) for sending event
 
@@ -46,17 +45,9 @@ class SignInViewModel @Inject constructor(
                 when(result){
                     is Resource.Success -> {
 
-                        val doctor = auThenticateUserAsDoctor(email, password)
-                        val patient = auThenticateUserAsPatient(email, password)
+                        MyApp.authenticatedUser = MyApp.app.login(Credentials.anonymous(true))
 
-                        if (doctor != null) {
-                            MyApp.doctor = doctor
-//                            sendUiEvent(UiEvent.Navigate(Screen.fkldflk.route))
-                            sendUiEvent(UiEvent.ShowSnackBar("login as a patient."))
-                        } else if (patient != null) {
-                            MyApp.patient = patient
-                            sendUiEvent(UiEvent.Navigate(Screen.mainHome.route))
-                        }
+                        sendUiEvent(UiEvent.Navigate(Screen.mainHome.withArgs(email, password)))
 
                     }
                     is Resource.Loading -> {
@@ -71,29 +62,6 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun auThenticateUserAsPatient(email: String, password: String): Patient? {
-
-        //Log.d("entered as patient", "entered to auth patient")
-
-        val user = realm
-            .query<Patient>("email == $0 and password == $1", email, password)
-            .first()
-            .find()
-
-        //if(user is Patient) Log.d("entered as patient", "auth patient successful")
-
-        return user
-
-    }
-
-    fun auThenticateUserAsDoctor(email: String, password: String): Doctor? {
-        val user = realm
-            .query<Doctor>("email == $0 and password == $1", email, password)
-            .first()
-            .find()
-        Log.d("entered as doctor", "auth  doctor done")
-        return user
-    }
     private fun sendUiEvent(uiEvent: UiEvent){  // sends flow throw the channel
         viewModelScope.launch{   // this binds the lifecycle of coroutine with our viewmodel
             _uiEvents.send(uiEvent)

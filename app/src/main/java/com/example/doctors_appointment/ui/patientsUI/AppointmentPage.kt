@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.ui
+package com.example.doctors_appointment.ui.patientsUI
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,11 +22,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import com.example.doctors_appointment.data.model.Appointment
 import com.example.doctors_appointment.data.model.Doctor
-import com.example.doctors_appointment.ui.mainHome.fontInria
+import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.viewmodel.OthersViewModel
+import com.example.doctors_appointment.ui.patientsUI.viewmodels.OthersViewModel
 
 
 @Composable
@@ -58,8 +58,8 @@ fun AppointmentPage(
 
     Column(
         modifier = Modifier
-                .background(Indigo50)
-                .padding(15.dp)
+            .background(Indigo50)
+            .padding(15.dp)
     ) {
         TabRow(
             selectedTabIndex = selectedTabIndex,
