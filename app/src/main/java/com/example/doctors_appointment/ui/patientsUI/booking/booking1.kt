@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.ui.booking
+package com.example.doctors_appointment.ui.patientsUI.booking
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -36,14 +36,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.util.Screen
-import com.example.doctors_appointment.ui.BottomNavigationItem
-import com.example.doctors_appointment.ui.mainHome.fontInria
+import com.example.doctors_appointment.ui.patientsUI.BottomNavigationItem
+import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
 import com.example.doctors_appointment.ui.theme.Indigo400
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.viewmodel.BookingViewModel
-import io.realm.kotlin.ext.realmListOf
-import kotlin.random.Random
+import com.example.doctors_appointment.ui.patientsUI.viewmodels.BookingViewModel
 
 @Composable
 fun BookSchedule(

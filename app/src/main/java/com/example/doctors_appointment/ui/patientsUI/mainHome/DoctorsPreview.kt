@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.ui.mainHome
+package com.example.doctors_appointment.ui.patientsUI.mainHome
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,7 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -30,11 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.data.model.Doctor
-import com.example.doctors_appointment.data.repository.MongoRepository
 import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.viewmodel.MainHomeViewModel
+import com.example.doctors_appointment.ui.patientsUI.viewmodels.MainHomeViewModel
 
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.ui
+package com.example.doctors_appointment.ui.patientsUI
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,16 +34,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.doctors_appointment.data.repository.MongoRepoImplementation
 import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.data.repository.MongoRepository
-import com.example.doctors_appointment.ui.booking.BookSchedule
-import com.example.doctors_appointment.ui.booking.FinalBooking
-import com.example.doctors_appointment.ui.mainHome.MainHome
+import com.example.doctors_appointment.ui.patientsUI.booking.BookSchedule
+import com.example.doctors_appointment.ui.patientsUI.booking.FinalBooking
+import com.example.doctors_appointment.ui.patientsUI.mainHome.MainHome
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.viewmodel.BookingViewModel
-import com.example.doctors_appointment.ui.viewmodel.MainHomeViewModel
-import com.example.doctors_appointment.ui.viewmodel.OthersViewModel
+import com.example.doctors_appointment.ui.patientsUI.viewmodels.BookingViewModel
+import com.example.doctors_appointment.ui.patientsUI.viewmodels.MainHomeViewModel
+import com.example.doctors_appointment.ui.patientsUI.viewmodels.OthersViewModel
 
 data class BottomNavigationItem(
     val title: String,
@@ -56,9 +57,9 @@ data class BottomNavigationItem(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavBar(
-    repository: MongoRepository
-) {
+fun NavBar() {
+
+    val repository: MongoRepository = MongoRepoImplementation
 
     // viewModel Initialization
 

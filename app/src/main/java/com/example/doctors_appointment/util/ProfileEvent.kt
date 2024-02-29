@@ -6,7 +6,8 @@ sealed class ProfileEvent {
     data class EditNumber(val contact: String): ProfileEvent()
     data class EditGender(val gender: Boolean): ProfileEvent()
     data class EditHeight(val height: Double): ProfileEvent()
-    data class EditWeight(val weight: Double): ProfileEvent()
-    data class EditNotificationStatus(val notificationStatus: Boolean): ProfileEvent()
+    data class EditWeight(val weight: Double) : ProfileEvent()
+    data class EditDoT(val dot: String) : ProfileEvent()
+    data class EditNotificationStatus(val notificationStatus: Boolean) : ProfileEvent()
     object OnSave: ProfileEvent()
 }

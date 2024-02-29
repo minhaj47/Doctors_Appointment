@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.ui
+package com.example.doctors_appointment.ui.patientsUI
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,32 +31,43 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.util.Screen
-import com.example.doctors_appointment.ui.mainHome.fontInria
+import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
+import com.example.doctors_appointment.ui.theme.Indigo400
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.theme.Indigo400
-import com.example.doctors_appointment.ui.viewmodel.OthersViewModel
+import com.example.doctors_appointment.ui.patientsUI.viewmodels.OthersViewModel
 
 @Composable
-fun DoctorsPage(
+fun CatagoryDoctorsPage(
     navController: NavController,
+    category: String?,
     othersViewModel: OthersViewModel
 ) {
 
-    val doctors = othersViewModel.doctors
+    if (category != null) {
+        othersViewModel.getDoctorFromCategory(category)
+    }else{
+        navController.popBackStack()
+    }
+
+    val categoryDoctors = othersViewModel.categoryDoctors.value
+
 
     Box(
         modifier = Modifier
             .fillMaxSize()
     ){
+
         Column(
             modifier = Modifier
                 .background(Indigo50)
+                .fillMaxWidth()
                 .padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Find your Doctor",
+                text = category.toString(),
                 style = MaterialTheme.typography.headlineMedium,
                 fontFamily = fontInria,
                 color = Indigo900,
@@ -65,18 +76,22 @@ fun DoctorsPage(
             )
             LazyColumn(
                 modifier = Modifier
-                    .padding(top = 5.dp, start = 5.dp, end = 5.dp, bottom = 65.dp)
+                    .fillMaxWidth()
+                    .padding(bottom = 65.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ){
-                items(doctors.value.size){
-                    DoctorsRow(doctor = doctors.value[it], navController)
+                items(categoryDoctors.size){
+                    CategoryDoctorsRow(doctor = categoryDoctors[it], navController)
                 }
             }
         }
     }
+
 }
 
+
 @Composable
-fun DoctorsRow(
+fun CategoryDoctorsRow(
     doctor: Doctor,
     navController: NavController
 ) {
@@ -87,7 +102,7 @@ fun DoctorsRow(
             .clip(RoundedCornerShape(10))
             .border(2.dp, Indigo500, RoundedCornerShape(10))
             .background(Color.White)
-            //.background(Indigo50)
+        //.background(Indigo50)
 
     ){
 
@@ -110,12 +125,7 @@ fun DoctorsRow(
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
-                Text(
-                    text = doctor.medicalSpecialty,
-                    fontSize = 10.sp,
-                    fontFamily = fontInria,
-                    color = Indigo900
-                )
+
                 Text(
                     text = "Qualifications:",
                     fontSize = 12.sp,
@@ -148,7 +158,7 @@ fun DoctorsRow(
 
             }
             Column(
-                 horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(.8f)
             ) {
                 Text(
@@ -193,8 +203,8 @@ fun DoctorsRow(
                 ) {
                     Text(
                         text = "Details",
+                        fontWeight = FontWeight.Bold,
                         fontFamily = fontInria,
-                        fontWeight = FontWeight.Bold
                     )
                 }
 

@@ -1,31 +1,27 @@
-package com.example.doctors_appointment.ui.viewmodel
+package com.example.doctors_appointment.ui.patientsUI.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.doctors_appointment.MyApp
 import com.example.doctors_appointment.data.model.Appointment
 import com.example.doctors_appointment.data.model.Doctor
-import com.example.doctors_appointment.data.model.Prescription
 import com.example.doctors_appointment.data.repository.MongoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.realm.kotlin.Realm
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.util.Date
-import javax.inject.Inject
 
-@HiltViewModel
-class BookingViewModel @Inject constructor(
+class BookingViewModel(
     private val repository: MongoRepository
-): ViewModel() {
+) : ViewModel() {
 
     var doctor1 = Doctor()
     var user = MyApp.patient
     var appointment = Appointment()
-    fun getDoctorFromId(userId: String){
+    fun getDoctorFromId(userId: String) {
 
         viewModelScope.launch {
             doctor1 = repository.getDoctorFromId(userId)!!

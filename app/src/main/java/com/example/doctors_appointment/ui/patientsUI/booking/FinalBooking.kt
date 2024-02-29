@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.ui.booking
+package com.example.doctors_appointment.ui.patientsUI.booking
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -18,13 +18,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.doctors_appointment.MyApp
 import com.example.doctors_appointment.util.Screen
-import com.example.doctors_appointment.ui.AppointmentRow
-import com.example.doctors_appointment.ui.mainHome.fontInria
+import com.example.doctors_appointment.ui.patientsUI.AppointmentRow
+import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.viewmodel.BookingViewModel
+import com.example.doctors_appointment.ui.patientsUI.viewmodels.BookingViewModel
 
 @Composable
 fun FinalBooking(
@@ -57,9 +56,9 @@ fun FinalBooking(
 
         AppointmentRow(
             appointment,
-            Modifier.padding(40.dp)
-                .scale(1.4f),
-            bookingViewModel.doctor1
+            Modifier
+                .padding(40.dp)
+                .scale(1.4f)
         )
 
         Spacer(modifier = Modifier.height(35.dp))

@@ -28,28 +28,8 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-object DatabaseModule{
+object AuthModule {
 
-    @Singleton
-    @Provides
-    fun provideRealm(): Realm {
-        val config = RealmConfiguration.Builder(
-            schema = setOf(
-                Doctor::class,
-                Patient::class,
-                Appointment::class,
-                Prescription::class
-            )
-        ).build()
-
-        return Realm.open(config)
-    }
-
-    @Singleton
-    @Provides
-    fun provideMongoRepo(realm: Realm): MongoRepository{
-        return MongoRepoImplementation(realm)
-    }
 
     @Provides
     @Singleton
@@ -57,7 +37,7 @@ object DatabaseModule{
 
     @Provides
     @Singleton
-    fun providesAuthRepositoryImp(firebaseAuth: FirebaseAuth) : AuthRepository{
+    fun providesAuthRepositoryImp(firebaseAuth: FirebaseAuth): AuthRepository {
         return AuthRepositoryImpl(firebaseAuth)
     }
 }

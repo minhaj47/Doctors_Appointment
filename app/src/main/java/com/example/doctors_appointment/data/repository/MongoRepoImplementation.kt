@@ -6,17 +6,28 @@ import com.example.doctors_appointment.data.model.Appointment
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.model.Patient
 import com.example.doctors_appointment.data.model.Prescription
+import com.example.doctors_appointment.util.Constants
+import com.google.android.gms.tasks.Tasks.await
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import io.realm.kotlin.Realm
+import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.ext.realmListOf
+import io.realm.kotlin.log.LogLevel
+//import io.realm.kotlin.mongodb.App
+//import io.realm.kotlin.mongodb.Credentials
+//import io.realm.kotlin.mongodb.sync.SyncConfiguration
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.mongodb.kbson.ObjectId
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -25,16 +36,57 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+object MongoRepoImplementation : MongoRepository {
 
-open class MongoRepoImplementation(
-    val realm: Realm
-    ): MongoRepository {
+    private lateinit var realm: Realm
 
-    override suspend fun insertDoctor(doctor: Doctor){
+    init {
+        configureTheRealm()
+    }
+
+    override fun configureTheRealm() {
+        val config = RealmConfiguration.Builder(
+            schema = setOf(
+                Doctor::class,
+                Patient::class,
+                Appointment::class,
+                Prescription::class
+            )
+        ).build()
+
+        realm = Realm.open(config)
+    }
+
+    override fun auThenticateUserAsPatient(email: String, password: String): Patient? {
+
+        //Log.d("entered as patient", "entered to auth patient")
+
+        val user = realm
+            .query<Patient>("email == $0 and password == $1", email, password)
+            .first()
+            .find()
+
+        if (user is Patient) Log.d("entered as patient", "auth patient successful")
+
+        return user
+    }
+
+    override fun auThenticateUserAsDoctor(email: String, password: String): Doctor? {
+        val user = realm
+            .query<Doctor>("email == $0 and password == $1", email, password)
+            .first()
+            .find()
+        if (user is Doctor) Log.d("entered as doctor", "auth  doctor done")
+        return user
+    }
+
+
+    override suspend fun insertDoctor(doctor: Doctor) {
         realm.write {
-            copyToRealm(doctor)
+            copyToRealm(doctor, UpdatePolicy.ALL)
         }
     }
+
     override suspend fun deleteDoctor(doctor: Doctor) {
 
         realm.write {
@@ -50,15 +102,17 @@ open class MongoRepoImplementation(
         }
 
     }
+
     override suspend fun updateDoctor(doctor: Doctor) {
         realm.write {
             try {
-                val queriedDoctor = this.query<Doctor>(query = "_id == $0", doctor._id).first().find()
+                val queriedDoctor = query<Doctor>(query = "_id == $0", doctor._id).first().find()
 
                 queriedDoctor?.name = doctor.name
                 queriedDoctor?.qualifications = doctor.qualifications
                 queriedDoctor?.address = doctor.address
                 queriedDoctor?.about = doctor.about
+                queriedDoctor?.gender = doctor.gender
                 queriedDoctor?.appointments = doctor.appointments
                 queriedDoctor?.availabilityStatus = doctor.availabilityStatus
                 queriedDoctor?.bmdcRegistrationNumber = doctor.bmdcRegistrationNumber
@@ -83,15 +137,16 @@ open class MongoRepoImplementation(
 
 
     override fun getAllDoctors(): Flow<List<Doctor>> {
-        return realm
+        val frozenDoctor = realm
             .query<Doctor>()
             .asFlow()
             .map {
                 it.list
             }
+        return frozenDoctor
     }
 
-    override suspend fun getCategoryDoctor(category: String): Flow<List<Doctor>> {
+    override fun getCategoryDoctor(category: String): Flow<List<Doctor>> {
         return realm
             .query<Doctor>(query = "medicalSpecialty == $0", category)
             .asFlow()
@@ -100,7 +155,7 @@ open class MongoRepoImplementation(
             }
     }
 
-    override suspend fun getDoctorFromId(userId: String): Doctor? {
+    override fun getDoctorFromId(userId: String): Doctor? {
         val userObjId = ObjectId(userId)
         return realm
             .query<Doctor>("_id  == $0", userObjId)
@@ -111,14 +166,14 @@ open class MongoRepoImplementation(
     // Patient
 
 
-    override suspend fun getPatientFromId(_id: ObjectId): Patient? {
+    override fun getPatientFromId(_id: ObjectId): Patient? {
         return realm
             .query<Patient>("_id == $0", _id)
             .first()
             .find()
     }
 
-    override suspend fun getAppointmentFromId(OId: String): Appointment? {
+    override fun getAppointmentFromId(OId: String): Appointment? {
         val objId = ObjectId(OId)
         return realm
             .query<Appointment>("_id == $0", objId)
@@ -131,15 +186,17 @@ open class MongoRepoImplementation(
             copyToRealm(patient)
         }
     }
+
     override suspend fun deletePatient(patient: Patient) {
 
         realm.write {
 
-            val queriedPatient = realm.query<Patient>(query = "_id == $0", patient._id).first().find()
+            val queriedPatient = query<Patient>(query = "_id == $0", patient._id).first().find()
 
             try {
                 queriedPatient?.let {
                     delete(it)
+                    Log.d("fjd", "patient deletion done")
                 }
             } catch (e:Exception){
                 Log.d("MongoRepoImplementation", "${e.message}")
@@ -148,89 +205,42 @@ open class MongoRepoImplementation(
 
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+
     override suspend fun updatePatient(patient: Patient) {
-        realm.writeBlocking {
-            GlobalScope.launch {
-                try {
-                    val queriedPatient = async { getPatientFromId(patient._id) }
-                    delay(3000L)
 
-                    println(queriedPatient.await()?.name)
+        realm.write {
+            val queriedPatient = query<Patient>(query = "_id == $0", patient._id).first().find()
 
-                    queriedPatient.await()?.apply {
-                        println("Inside apply ")
-                        name = patient.name
-                        height = patient.height
-                        weight = patient.weight
-                        contactNumber = patient.contactNumber
-                        email = patient.email
-                        medicalHistory = patient.medicalHistory
-                        dateOfBirth = patient.dateOfBirth
-                        notification = patient.notification
-                        profileImage = patient.profileImage
-                        password = patient.password
-                        println("below name")
-                    }
-
-                }catch (e: Exception){
-                    println("exception in update patient" + "${e.message}")
+            try {
+                println(queriedPatient?.name)
+                queriedPatient?.apply {
+                    println("inside apply")
+                    name = patient.name
+                    height = patient.height
+                    weight = patient.weight
+                    contactNumber = patient.contactNumber
+                    gender = patient.gender
+                    email = patient.email
+                    medicalHistory = patient.medicalHistory
+                    dateOfBirth = patient.dateOfBirth
+                    notification = patient.notification
+                    profileImage = patient.profileImage
+                    password = patient.password
+                    println("after apply")
+                    println(queriedPatient.name)
                 }
 
+            } catch (e: Exception) {
+                Log.d("inside update patient", "${e.message}")
             }
+
 
         }
+
     }
-
-
-
-//    override suspend fun updatePatient(patient: Patient) {
-//
-//        realm.write {
-//            copyToRealm(Patient().apply {
-//                _id = patient._id
-//                name = patient.name
-//                height = patient.height
-//                weight = patient.weight
-//                contactNumber = patient.contactNumber
-//                email = patient.email
-//                medicalHistory = patient.medicalHistory
-//                dateOfBirth = patient.dateOfBirth
-//                notification = patient.notification
-//                profileImage = patient.profileImage
-//
-//                password = patient.password
-//            }, UpdatePolicy.ALL)
-//        }
-//    }
-
-//    override suspend fun updatePatient(patient: Patient) {
-//        realm.write {
-//            // Get the live patient object from the Realm, or null if it doesn't exist
-//            val existingPatient = findLatest(patient)
-//
-//            // If the existing patient is not null, update its properties
-//            existingPatient?.apply {
-//                name = patient.name
-//                height = patient.height
-//                weight = patient.weight
-//                contactNumber = patient.contactNumber
-//                email = patient.email
-//                medicalHistory = patient.medicalHistory
-//                dateOfBirth = patient.dateOfBirth
-//                notification = patient.notification
-//                profileImage = patient.profileImage
-//                password = patient.password
-//            } ?: run {
-//                // If the patient doesn't exist, create a new one
-//                copyToRealm(patient, UpdatePolicy.ALL)
-//            }
-//        }
-//    }
-
     // appointment
 
-    override suspend fun getPastAppointmentsOfUser(): Flow<List<Appointment>> {
+    override fun getPastAppointmentsOfUser(): Flow<List<Appointment>> {
 
         val userId = MyApp.patient._id
 
@@ -239,7 +249,11 @@ open class MongoRepoImplementation(
         val milliseconds = date.time
 
         return realm
-            .query<Appointment>("@links.Patient.medicalHistory._id == $0 AND appointmentDate < $1", userId, milliseconds)
+            .query<Appointment>(
+                "@links.Patient.medicalHistory._id == $0 AND appointmentDate < $1",
+                userId,
+                milliseconds
+            )
             .asFlow()
             .map {
                 it.list
@@ -247,7 +261,7 @@ open class MongoRepoImplementation(
     }
 
 
-    override suspend fun getUpcomingAppointmentsOfUser(): Flow<List<Appointment>> {
+    override fun getUpcomingAppointmentsOfUser(): Flow<List<Appointment>> {
 
         val userId = MyApp.patient._id
 
@@ -255,12 +269,17 @@ open class MongoRepoImplementation(
         val date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant())
         val milliseconds = date.time
         return realm
-            .query<Appointment>("@links.Patient.medicalHistory._id == $0 AND appointmentDate >= $1", userId, milliseconds)
+            .query<Appointment>(
+                "@links.Patient.medicalHistory._id == $0 AND appointmentDate >= $1",
+                userId,
+                milliseconds
+            )
             .asFlow()
             .map {
                 it.list
             }
     }
+
     override suspend fun insertAppointment(appointment: Appointment){
         realm.write {
             copyToRealm(appointment)

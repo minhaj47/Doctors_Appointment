@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.ui
+package com.example.doctors_appointment.ui.patientsUI
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -45,15 +45,15 @@ import androidx.navigation.NavController
 import com.example.doctors_appointment.R
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.util.Screen
-import com.example.doctors_appointment.ui.mainHome.RoundImage
-import com.example.doctors_appointment.ui.mainHome.fontActor
-import com.example.doctors_appointment.ui.mainHome.fontInria
+import com.example.doctors_appointment.ui.patientsUI.mainHome.RoundImage
+import com.example.doctors_appointment.ui.patientsUI.mainHome.fontActor
+import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
 import com.example.doctors_appointment.ui.theme.Indigo200
 import com.example.doctors_appointment.ui.theme.Indigo400
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.viewmodel.OthersViewModel
+import com.example.doctors_appointment.ui.patientsUI.viewmodels.OthersViewModel
 
 @Composable
 fun DoctorsDetailsPage(
