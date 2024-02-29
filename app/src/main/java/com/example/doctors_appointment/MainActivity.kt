@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.ui.CheckUser
+import com.example.doctors_appointment.ui.DoctorNavBar
 import com.example.doctors_appointment.ui.HomePage
 import com.example.doctors_appointment.ui.SignIn
 import com.example.doctors_appointment.ui.SignUp
@@ -48,36 +49,13 @@ class MainActivity : ComponentActivity() {
                     SignUp(navController = navController, signUpViewModel = signUpViewModel)
                 }
 
-//                composable(
-//                    route = Screen.checkUser.route + "/{email}" + "/{password}",
-//                    arguments = listOf(
-//                        navArgument("email") {
-//                            type = NavType.StringType
-//                            defaultValue = ""
-//                            nullable = true
-//                        },
-//                        navArgument("password") {
-//                            type = NavType.StringType
-//                            defaultValue = ""
-//                            nullable = true
-//                        }
-//                    )
-//                ) { entry ->
-//                    entry.arguments?.getString("email")
-//                        ?.let {
-//                            CheckUser(
-//                                email = it,
-//                                password = entry.arguments?.getString("password")!!,
-//                            )
-//                        }
-//                }
                 composable(Screen.mainHome.route) {
                     NavBar()
                 }
-//
-//                composable(Screen.appointment.route){
-//                    AppointmentPage(navController = navController)
-//                }
+
+                composable(Screen.doctorNavBar.route) {
+                    DoctorNavBar()
+                }
 //
 //                composable(Screen.profile.route){
 //                    ProfilePage(navController = navController)

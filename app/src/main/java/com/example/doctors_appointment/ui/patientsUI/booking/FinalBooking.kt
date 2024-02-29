@@ -58,8 +58,7 @@ fun FinalBooking(
             appointment,
             Modifier
                 .padding(40.dp)
-                .scale(1.4f),
-            bookingViewModel.doctor1
+                .scale(1.4f)
         )
 
         Spacer(modifier = Modifier.height(35.dp))

@@ -18,7 +18,6 @@ import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.realm.kotlin.ext.query
-import io.realm.kotlin.mongodb.Credentials
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
@@ -45,14 +44,12 @@ class SignInViewModel @Inject constructor(
                 when(result){
                     is Resource.Success -> {
 
-//                        MyApp.authenticatedUser = MyApp.app.login(Credentials.anonymous(true))
-
                         val isPatient = CheckUser(email = email, password = password)
 
                         if (isPatient) {
                             sendUiEvent(UiEvent.Navigate(Screen.mainHome.route))
                         } else {
-                            Log.d("inside login view", "login as patient")
+                            sendUiEvent(UiEvent.Navigate(Screen.doctorNavBar.route))
                         }
 
                         //sendUiEvent(UiEvent.Navigate(Screen.checkUser.withArgs(email, password)))

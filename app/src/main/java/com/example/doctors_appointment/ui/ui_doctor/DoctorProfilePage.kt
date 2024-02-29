@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.ui.patientsUI
+package com.example.doctors_appointment.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,11 +32,6 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,24 +41,33 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.doctors_appointment.MyApp
 import com.example.doctors_appointment.R
-import com.example.doctors_appointment.data.model.Appointment
-import com.example.doctors_appointment.data.model.Patient
-import com.example.doctors_appointment.ui.patientsUI.mainHome.RoundImage
-import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
+
 import com.example.doctors_appointment.ui.theme.Indigo200
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.navigation.NavController
+import com.example.doctors_appointment.data.model.Doctor
+import com.example.doctors_appointment.data.model.Patient
+import com.example.doctors_appointment.ui.patientsUI.AppointmentView
+import com.example.doctors_appointment.ui.patientsUI.EditProfile
+import com.example.doctors_appointment.ui.patientsUI.Profile
+import com.example.doctors_appointment.ui.patientsUI.mainHome.RoundImage
+import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
 import com.example.doctors_appointment.ui.patientsUI.viewmodels.OthersViewModel
+import com.example.doctors_appointment.ui.ui_doctor.DoctorViewModel
 import com.example.doctors_appointment.util.ProfileEvent
 
 @Composable
-fun ProfilePage(
-    navController: NavController,
-    othersViewModel: OthersViewModel
+fun DoctorProfilePage(
+    doctorViewModel: DoctorViewModel
 ) {
 
     var onEdit by remember {
@@ -81,7 +85,7 @@ fun ProfilePage(
                 .fillMaxWidth()
                 .padding(start = 20.dp, bottom = 20.dp),
             horizontalArrangement = Arrangement.Center
-        ){
+        ) {
             Text(
                 text = "Profile",
                 fontSize = 20.sp,
@@ -104,7 +108,7 @@ fun ProfilePage(
                 }
             ) {
                 Icon(
-                    imageVector = if(onEdit) Icons.Filled.Edit else Icons.Outlined.Edit,
+                    imageVector = if (onEdit) Icons.Filled.Edit else Icons.Outlined.Edit,
                     contentDescription = null
                 )
             }
@@ -113,28 +117,27 @@ fun ProfilePage(
         Column(
             modifier = Modifier
                 .height(160.dp)
-                .fillMaxWidth()
-            ,
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
 
-            ){
+            ) {
             RoundImage(
                 image = painterResource(id = R.drawable.man),
                 modifier = Modifier.height(80.dp)
             )
 
             var filledName by remember {
-                mutableStateOf(othersViewModel.user.name)
+                mutableStateOf(doctorViewModel.user.name)
             }
 
-            if(onEdit){
+            if (onEdit) {
                 OutlinedTextField(
 
                     value = filledName,
                     onValueChange = { newText ->
                         filledName = newText
-                        othersViewModel.OnEvent(ProfileEvent.EditName(newText))
+                        doctorViewModel.OnEvent(ProfileEvent.EditName(newText))
                     },
                     label = {
                         Text(
@@ -149,9 +152,9 @@ fun ProfilePage(
 //                        unfocusedIndicatorColor = Color.Transparent // No indicator when not focused
                     ),
                 )
-            }else{
+            } else {
                 Text(
-                    text = othersViewModel.user.name,
+                    text = doctorViewModel.user.name,
                     fontFamily = fontInria,
                     fontSize = 25.sp,
                     textAlign = TextAlign.Center
@@ -166,14 +169,14 @@ fun ProfilePage(
                 .padding(top = 5.dp, start = 5.dp, end = 5.dp, bottom = 65.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            item{
+        ) {
+            item {
 
-                if(onEdit){
-                    EditProfile(othersViewModel.user, othersViewModel)
+                if (onEdit) {
+                    EditDoctorProfile(doctorViewModel.user, doctorViewModel)
                     OutlinedButton(
                         onClick = {
-                            othersViewModel.OnEvent(ProfileEvent.OnSave)
+                            doctorViewModel.OnEvent(ProfileEvent.OnSave)
                             onEdit = !onEdit
                         }
                     ) {
@@ -183,23 +186,7 @@ fun ProfilePage(
                             fontFamily = fontInria,
                         )
                     }
-                } else Profile(othersViewModel.user)
-                
-                Spacer(modifier = Modifier.height(7.dp))
-                
-                Text(
-                    text = "Medical History:",
-                    fontSize = 25.sp,
-                    fontFamily = fontInria,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-
-                Spacer(modifier = Modifier.height(7.dp))
-
-                for (item in othersViewModel.user.medicalHistory) {
-                    AppointmentView(item)
-                }
+                } else DoctorProfile(doctorViewModel.user)
 
             }
         }
@@ -208,11 +195,12 @@ fun ProfilePage(
 
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditProfile(
-    patient: Patient,
-    othersViewModel: OthersViewModel,
+fun EditDoctorProfile(
+    doctor: Doctor,
+    doctorViewModel: DoctorViewModel
 ) {
 
     Box(
@@ -223,7 +211,7 @@ fun EditProfile(
 //            .border(2.dp, Indigo500, RoundedCornerShape(5))
             .background(Color.White)
 
-    ){
+    ) {
 
         Column(
             modifier = Modifier
@@ -232,68 +220,8 @@ fun EditProfile(
             verticalArrangement = Arrangement.Center
         ) {
 
-            var filledHeight by remember {
-                mutableStateOf(patient.height.toString())
-            }
-
-            OutlinedTextField(
-
-                value = filledHeight,
-                onValueChange = { newText ->
-                    if (newText.isBlank() || newText.toDoubleOrNull() != null) {
-                        filledHeight = newText
-                        val newHeight = newText.toDoubleOrNull() ?: 0.0
-                        othersViewModel.OnEvent(ProfileEvent.EditHeight(newHeight))
-                    }
-                },
-                label = {
-                    Text(
-                        text = "Height",
-                        fontFamily = fontInria,
-                    )
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent, // Text color
-                    unfocusedContainerColor = Color.Transparent, // Background color
-//                    focusedIndicatorColor = Color.Transparent, // No indicator when focused
-//                    unfocusedIndicatorColor = Color.Transparent // No indicator when not focused
-                ),
-            )
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            var filledWeight by remember {
-                mutableStateOf(patient.weight.toString())
-            }
-
-            OutlinedTextField(
-
-                value = filledWeight,
-                onValueChange = { newText ->
-                    if (newText.isBlank() || newText.toDoubleOrNull() != null) {
-                        filledWeight = newText
-                        val newWeight = newText.toDoubleOrNull() ?: 0.0
-                        othersViewModel.OnEvent(ProfileEvent.EditWeight(newWeight))
-                    }
-                },
-                label = {
-                    Text(
-                        text = "Weight",
-                        fontFamily = fontInria,
-                    )
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent, // Text color
-                    unfocusedContainerColor = Color.Transparent, // Background color
-//                    focusedIndicatorColor = Color.Transparent, // No indicator when focused
-//                    unfocusedIndicatorColor = Color.Transparent // No indicator when not focused
-                ),
-            )
-
-            Spacer(modifier = Modifier.height(5.dp))
-
             var filledGender by remember {
-                mutableStateOf(if(patient.gender == null)"Unknown" else if(patient.gender == true) "Male" else "Female")
+                mutableStateOf(if (doctor.gender == null) "Unknown" else if (doctor.gender == true) "Male" else "Female")
             }
             var isExpanded by remember {
                 mutableStateOf(false)
@@ -343,7 +271,7 @@ fun EditProfile(
                                     "Male" -> true
                                     else -> false
                                 }
-                                othersViewModel.OnEvent(ProfileEvent.EditGender(genderValue))
+                                doctorViewModel.OnEvent(ProfileEvent.EditGender(genderValue))
                             }
                         )
                     }
@@ -354,14 +282,14 @@ fun EditProfile(
             Spacer(modifier = Modifier.height(5.dp))
 
             var filledNumber by remember {
-                mutableStateOf(patient.contactNumber)
+                mutableStateOf(doctor.contactNumber)
             }
             OutlinedTextField(
 
                 value = filledNumber,
                 onValueChange = { newText ->
                     filledNumber = newText
-                    othersViewModel.OnEvent(ProfileEvent.EditNumber(filledNumber))
+                    doctorViewModel.OnEvent(ProfileEvent.EditNumber(filledNumber))
                 },
                 label = {
                     Text(
@@ -380,14 +308,14 @@ fun EditProfile(
             Spacer(modifier = Modifier.height(5.dp))
 
             var filledMail by remember {
-                mutableStateOf(patient.email)
+                mutableStateOf(doctor.email)
             }
             OutlinedTextField(
 
                 value = filledMail,
                 onValueChange = { newText ->
                     filledMail = newText
-                    othersViewModel.OnEvent(ProfileEvent.EditEmail(filledMail))
+                    doctorViewModel.OnEvent(ProfileEvent.EditEmail(filledMail))
                 },
                 label = {
                     Text(
@@ -405,8 +333,12 @@ fun EditProfile(
 
             Spacer(modifier = Modifier.height(5.dp))
 
+            val notification: Boolean = if (doctor.notification == null) {
+                true
+            } else doctor.notification!!
+
             var notificationStatus by remember {
-                mutableStateOf(patient.notification)
+                mutableStateOf(notification)
             }
 
             Row(
@@ -422,34 +354,34 @@ fun EditProfile(
 
                 Spacer(modifier = Modifier.width(10.dp))
 
-                (if (notificationStatus != null) notificationStatus else true)?.let {
-                    Switch(
-                        checked = it,
-                        onCheckedChange = {
-                            notificationStatus = it
-                            othersViewModel.OnEvent(
-                                ProfileEvent.EditNotificationStatus(
-                                    notificationStatus!!
-                                )
+
+                Switch(
+
+                    checked = notificationStatus,
+                    onCheckedChange = {
+                        notificationStatus = it
+                        doctorViewModel.OnEvent(
+                            ProfileEvent.EditNotificationStatus(
+                                notificationStatus
                             )
-                        },
-                        thumbContent = {
-                            if (notificationStatus as Boolean) {
-                                Icon(
-                                    imageVector = Icons.Filled.Check,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                                )
-                            }
-                        },
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = MaterialTheme.colorScheme.primary,
-                            checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
-                            uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
-                            uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
                         )
+                    },
+                    thumbContent = {
+                        if (notificationStatus) {
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(SwitchDefaults.IconSize),
+                            )
+                        }
+                    },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = MaterialTheme.colorScheme.primary,
+                        checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                        uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
+                        uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
                     )
-                }
+                )
             }
         }
     }
@@ -458,8 +390,8 @@ fun EditProfile(
 
 
 @Composable
-fun Profile(
-    patient:Patient,
+fun DoctorProfile(
+    doctor: Doctor
 ) {
     Box(
         modifier = Modifier
@@ -468,9 +400,8 @@ fun Profile(
             .clip(RoundedCornerShape(5))
             .border(2.dp, Indigo500, RoundedCornerShape(5))
             .background(Color.White)
-
-    ){
-
+    )
+    {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -478,37 +409,6 @@ fun Profile(
             verticalArrangement = Arrangement.Center
         ) {
 
-            Text(
-                text = "Height",
-                fontSize = 19.sp,
-                fontFamily = fontInria,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-
-            Text(
-                text = patient.height.toString(),
-                fontSize = 17.sp,
-                fontFamily = fontInria,
-                color = Indigo900
-            )
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Text(
-                text = "Weight",
-                fontSize = 19.sp,
-                fontFamily = fontInria,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-
-            Text(
-                text = patient.weight.toString(),
-                fontSize = 17.sp,
-                fontFamily = fontInria,
-                color = Indigo900
-            )
 
             Spacer(modifier = Modifier.height(5.dp))
 
@@ -521,7 +421,11 @@ fun Profile(
             )
 
             Text(
-                text = if(patient.gender == null){ "Unknown" } else if(patient.gender == true){ "Male" } else "Female",
+                text = if (doctor.gender == null) {
+                    "Unknown"
+                } else if (doctor.gender == true) {
+                    "Male"
+                } else "Female",
                 fontSize = 17.sp,
                 fontFamily = fontInria,
                 color = Indigo900
@@ -529,20 +433,7 @@ fun Profile(
 
             Spacer(modifier = Modifier.height(5.dp))
 
-            Text(
-                text = "Date of Birth:",
-                fontSize = 19.sp,
-                fontFamily = fontInria,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
 
-            Text(
-                text = patient.dateOfBirth,
-                fontSize = 17.sp,
-                fontFamily = fontInria,
-                color = Indigo900
-            )
 
 
             Spacer(modifier = Modifier.height(5.dp))
@@ -556,7 +447,7 @@ fun Profile(
             )
 
             Text(
-                text = patient.contactNumber,
+                text = doctor.contactNumber,
                 fontSize = 17.sp,
                 fontFamily = fontInria,
                 color = Indigo900
@@ -573,11 +464,32 @@ fun Profile(
             )
 
             Text(
-                text = patient.email,
+                text = doctor.email,
                 fontSize = 17.sp,
                 fontFamily = fontInria,
                 color = Indigo900
             )
+            Spacer(modifier = Modifier.height(5.dp))
+
+            Text(
+                text = "Qualifications: ",
+                fontSize = 19.sp,
+                fontFamily = fontInria,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold
+            )
+
+            val qualifications = doctor.qualifications
+
+            Text(
+                text = doctor.qualifications.toString(),
+                fontSize = 17.sp,
+
+                fontFamily = fontInria,
+                color = Indigo900
+            )
+
+
 
             Spacer(modifier = Modifier.height(5.dp))
 
@@ -590,7 +502,7 @@ fun Profile(
             )
 
             Text(
-                text = patient.notification.toString(),
+                text = doctor.notification.toString(),
                 fontSize = 17.sp,
                 fontFamily = fontInria,
                 color = Indigo900
@@ -598,116 +510,6 @@ fun Profile(
 
         }
     }
-}
 
-
-
-@Composable
-fun AppointmentView(
-    appointment: Appointment
-){
-    val prescription = appointment.prescription
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-            .clip(RoundedCornerShape(10))
-            .border(2.dp, Indigo500, RoundedCornerShape(10))
-            .background(Color.White)
-        //.background(Indigo50)
-
-    ){
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 15.dp, top = 12.dp, end = 10.dp, bottom = 8.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-
-            if (prescription != null) {
-                Text(
-                    text = prescription.appointment?.appointmentDate?.toString() ?: "Unknown",
-                    fontSize = 10.sp,
-                    fontFamily = fontInria,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(5.dp))
-            if (prescription != null) {
-                Text(
-                    text = "Problem: ${prescription.problem}",
-                    fontSize = 15.sp,
-                    fontFamily = fontInria,
-                    color = Indigo900,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(3.dp))
-
-            Text(
-                text = "Diagnosis:",
-                fontSize = 11.sp,
-                fontFamily = fontInria,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-
-            if (prescription != null) {
-                for (item in prescription.diagnosis){
-                    Text(
-                        text = item,
-                        fontSize = 13.sp,
-                        fontFamily = fontInria,
-                        color = Indigo900
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(3.dp))
-
-            Text(
-                text = "Medications:",
-                fontSize = 11.sp,
-                fontFamily = fontInria,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-
-            if (prescription != null) {
-                for (item in prescription.medications){
-                    Text(
-                        text = item,
-                        fontSize = 12.sp,
-                        fontFamily = fontInria,
-                        color = Indigo900
-                    )
-                }
-            }
-
-            Text(
-                text = "Advice:",
-                fontSize = 11.sp,
-                fontFamily = fontInria,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-
-            if (prescription != null) {
-                Text(
-                    text = prescription.advice,
-                    fontSize = 10.sp,
-                    fontFamily = fontInria,
-                    color = Color.Black
-                )
-            }
-
-
-        }
-    }
 
 }

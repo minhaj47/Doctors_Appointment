@@ -10,7 +10,9 @@ import com.example.doctors_appointment.data.model.Patient
 import com.example.doctors_appointment.data.repository.MongoRepository
 import com.example.doctors_appointment.util.ProfileEvent
 import com.example.doctors_appointment.util.UiEvent
+import com.google.android.gms.tasks.Tasks.await
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -50,29 +52,41 @@ class OthersViewModel(
                 newPatient.email = event.email
             }
             is ProfileEvent.EditGender -> {
+                println("inside edit gender")
                 newPatient.gender = event.gender
+                assert(newPatient.gender == event.gender)
             }
+
             is ProfileEvent.EditName -> {
                 newPatient.name = event.name
             }
+
             is ProfileEvent.EditHeight -> {
                 newPatient.height = event.height
             }
-//            is ProfileEvent.Edi -> {
-//                newPatient.weight = event.height
-//            }
+
+            is ProfileEvent.EditWeight -> {
+                newPatient.weight = event.weight
+            }
+
+            is ProfileEvent.EditDoT -> {
+                newPatient.dateOfBirth = event.dot
+            }
+
             is ProfileEvent.EditNumber -> {
                 newPatient.contactNumber = event.contact
             }
+
             is ProfileEvent.EditNotificationStatus -> {
                 newPatient.notification = event.notificationStatus
             }
+
             is ProfileEvent.OnSave -> {
                 viewModelScope.launch {
                     repository.updatePatient(newPatient)
+                    user = newPatient
                 }
             }
-            else -> Unit
         }
     }
 
@@ -101,6 +115,7 @@ class OthersViewModel(
     fun updatePatient(patient: Patient){
         viewModelScope.launch {
             repository.updatePatient(patient)
+            MyApp.patient = patient
         }
     }
 
