@@ -16,6 +16,7 @@ import com.example.doctors_appointment.ui.SignIn
 import com.example.doctors_appointment.ui.SignUp
 import com.example.doctors_appointment.ui.SignInViewModel
 import com.example.doctors_appointment.ui.SignUpViewModel
+import com.example.doctors_appointment.ui.patientsUI.NavBar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -47,32 +48,32 @@ class MainActivity : ComponentActivity() {
                     SignUp(navController = navController, signUpViewModel = signUpViewModel)
                 }
 
-                composable(
-                    route = Screen.doctorsDetails.route + "/{email}" + "/{password}",
-                    arguments = listOf(
-                        navArgument("email") {
-                            type = NavType.StringType
-                            defaultValue = ""
-                            nullable = true
-                        },
-                        navArgument("password") {
-                            type = NavType.StringType
-                            defaultValue = ""
-                            nullable = true
-                        }
-                    )
-                ) { entry ->
-                    entry.arguments?.getString("email")
-                        ?.let {
-                            CheckUser(
-                                email = it,
-                                password = entry.arguments?.getString("password")!!
-                            )
-                        }
-                }
-//                composable(Screen.doctors.route){
-//                    DoctorsPage(navController = navController, navigationViewModel = navigationViewModel)
+//                composable(
+//                    route = Screen.checkUser.route + "/{email}" + "/{password}",
+//                    arguments = listOf(
+//                        navArgument("email") {
+//                            type = NavType.StringType
+//                            defaultValue = ""
+//                            nullable = true
+//                        },
+//                        navArgument("password") {
+//                            type = NavType.StringType
+//                            defaultValue = ""
+//                            nullable = true
+//                        }
+//                    )
+//                ) { entry ->
+//                    entry.arguments?.getString("email")
+//                        ?.let {
+//                            CheckUser(
+//                                email = it,
+//                                password = entry.arguments?.getString("password")!!,
+//                            )
+//                        }
 //                }
+                composable(Screen.mainHome.route) {
+                    NavBar()
+                }
 //
 //                composable(Screen.appointment.route){
 //                    AppointmentPage(navController = navController)

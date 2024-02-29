@@ -41,28 +41,3 @@ object AuthModule {
         return AuthRepositoryImpl(firebaseAuth)
     }
 }
-
-
-// realm for local realm
-
-
-//    @Singleton
-//    @Provides
-//    fun provideRealm(): Realm {
-//        val config = RealmConfiguration.Builder(
-//            schema = setOf(
-//                Doctor::class,
-//                Patient::class,
-//                Appointment::class,
-//                Prescription::class
-//            )
-//        ).build()
-//
-//        return Realm.open(config)
-//    }
-//
-//    @Singleton
-//    @Provides
-//    fun provideMongoRepo(realm: Realm): MongoRepository{
-//        return MongoRepoImplementation(realm)
-//    }

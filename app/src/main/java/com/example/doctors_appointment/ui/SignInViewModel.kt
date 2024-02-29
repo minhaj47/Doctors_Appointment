@@ -45,9 +45,17 @@ class SignInViewModel @Inject constructor(
                 when(result){
                     is Resource.Success -> {
 
-                        MyApp.authenticatedUser = MyApp.app.login(Credentials.anonymous(true))
+//                        MyApp.authenticatedUser = MyApp.app.login(Credentials.anonymous(true))
 
-                        sendUiEvent(UiEvent.Navigate(Screen.mainHome.withArgs(email, password)))
+                        val isPatient = CheckUser(email = email, password = password)
+
+                        if (isPatient) {
+                            sendUiEvent(UiEvent.Navigate(Screen.mainHome.route))
+                        } else {
+                            Log.d("inside login view", "login as patient")
+                        }
+
+                        //sendUiEvent(UiEvent.Navigate(Screen.checkUser.withArgs(email, password)))
 
                     }
                     is Resource.Loading -> {

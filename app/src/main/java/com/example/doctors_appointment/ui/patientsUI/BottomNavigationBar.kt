@@ -34,6 +34,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.doctors_appointment.data.repository.MongoRepoImplementation
 import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.data.repository.MongoRepository
 import com.example.doctors_appointment.ui.patientsUI.booking.BookSchedule
@@ -56,10 +57,9 @@ data class BottomNavigationItem(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavBar(
-    repository: MongoRepository
-) {
+fun NavBar() {
 
+    val repository: MongoRepository = MongoRepoImplementation
 
     // viewModel Initialization
 

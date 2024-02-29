@@ -3,9 +3,11 @@ package com.example.doctors_appointment.util
 sealed class Screen(val route: String){
     object home: Screen("home")
     object signIn: Screen("signIn")
-    object signUp: Screen("signUp")
-    object mainHome: Screen("mainHome")
-    object doctors: Screen("doctors")
+    object signUp : Screen("signUp")
+
+    //    object checkUser: Screen("checkuser")
+    object mainHome : Screen("mainHome")
+    object doctors : Screen("doctors")
     object appointment: Screen("appointment")
     object profile: Screen("profile")
     object doctorsDetails: Screen("doctor's details page")
