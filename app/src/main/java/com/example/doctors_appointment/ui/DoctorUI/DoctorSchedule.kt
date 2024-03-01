@@ -17,7 +17,6 @@ import androidx.compose.material.icons.outlined.Today
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -36,13 +35,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.MyApp.Companion.doctor
 import com.example.doctors_appointment.data.model.Doctor
-import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.ui.patientsUI.BottomNavigationItem
 import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
 import com.example.doctors_appointment.ui.theme.Indigo400
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.ui_doctor.DoctorViewModel
+import com.example.doctors_appointment.ui.DoctorUI.DoctorViewModel
+import com.example.doctors_appointment.util.Screen
 
 
 @Composable
@@ -204,6 +203,7 @@ fun DoctorSchedule(
             for (i in 9..11) {
                 Slot(12 * (selectedTabIndex) + i, doctor, selectedSlot, doctorViewModel) {
                     selectedSlot = it
+                    navController.navigate(Screen.doctorAppointmentDetails.route)
                 }
             }
         }
@@ -219,7 +219,7 @@ fun Slot(
     doctor: Doctor,
     selectedSlot: Int,
     doctorViewModel: DoctorViewModel,
-    onSlotSelect: (Int) -> Unit     // Callback to notify parent when a slot is selected
+    onSlotSelect: (Int) -> Unit,    // Callback to notify parent when a slot is selected
 ) {
     Button(
         onClick = {

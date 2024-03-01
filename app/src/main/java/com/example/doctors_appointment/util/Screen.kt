@@ -17,6 +17,8 @@ sealed class Screen(val route: String){
     object doctorSchedule : Screen(route = "doctor schedule")
     object doctorNavBar : Screen(route = "doctor navigation bar")
     object doctorProfile : Screen(route = "doctor profile ")
+    object doctorAppointmentDetails : Screen(route = "doctor appointment details ")
+    object seePatientProfile : Screen(route = "see patient profile ")
 
     fun withArgs(vararg args: String): String {
         return buildString {

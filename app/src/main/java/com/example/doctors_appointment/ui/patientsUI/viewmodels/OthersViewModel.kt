@@ -87,6 +87,8 @@ class OthersViewModel(
                     user = newPatient
                 }
             }
+
+            else -> {}
         }
     }
 

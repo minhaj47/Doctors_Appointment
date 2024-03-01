@@ -29,6 +29,8 @@ import com.example.doctors_appointment.ui.theme.Indigo900
 import com.example.doctors_appointment.ui.patientsUI.viewmodels.OthersViewModel
 import io.realm.kotlin.ext.asFlow
 import kotlinx.coroutines.flow.collect
+import java.text.SimpleDateFormat
+import java.util.Date
 
 
 @Composable
@@ -99,6 +101,7 @@ fun AppointmentPage(
                     Modifier
                         .padding(10.dp)
                         .scale(1.1f),
+                    items[it].doctor.first()
                 )
             }
         }
@@ -109,6 +112,7 @@ fun AppointmentPage(
 fun AppointmentRow(
     appointment: Appointment,
     modifier: Modifier = Modifier,
+    doctor: Doctor
 ) {
     Box(
         modifier = Modifier
@@ -127,7 +131,13 @@ fun AppointmentRow(
         ) {
 
             Text(
-                text = appointment.appointmentDate.toString(),
+                text = if (appointment.appointmentDate != null) {
+                    convertLongToDateString(
+                        appointment.appointmentDate!!
+                    )
+                } else {
+                    "Time is not confirmed yet"
+                },
                 fontSize = 13.sp,
                 fontFamily = fontInria,
                 fontWeight = FontWeight.Bold,
@@ -141,7 +151,7 @@ fun AppointmentRow(
                 fontWeight = FontWeight.Bold,
             )
             Text(
-                text = appointment.doctor.toString(),
+                text = doctor.name,
                 fontSize = 10.sp,
                 fontFamily = fontInria,
                 color = Indigo900
@@ -169,7 +179,7 @@ fun AppointmentRow(
             )
 
             Text(
-                text = appointment.doctor.toString(),
+                text = doctor.address,
                 fontSize = 8.sp,
                 fontFamily = fontInria,
                 color = Indigo900
@@ -178,4 +188,10 @@ fun AppointmentRow(
         }
     }
 
+}
+
+fun convertLongToDateString(time: Long): String {
+    val date = Date(time)
+    val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss") // Define your date format here
+    return format.format(date)
 }

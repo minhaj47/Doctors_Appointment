@@ -405,8 +405,11 @@ fun EditProfile(
 
             Spacer(modifier = Modifier.height(5.dp))
 
+            val notification: Boolean =
+                if (patient.notification != null) patient.notification!! else false
+
             var notificationStatus by remember {
-                mutableStateOf(patient.notification)
+                mutableStateOf(notification)
             }
 
             Row(
@@ -422,34 +425,32 @@ fun EditProfile(
 
                 Spacer(modifier = Modifier.width(10.dp))
 
-                (if (notificationStatus != null) notificationStatus else true)?.let {
-                    Switch(
-                        checked = it,
-                        onCheckedChange = {
-                            notificationStatus = it
-                            othersViewModel.OnEvent(
-                                ProfileEvent.EditNotificationStatus(
-                                    notificationStatus!!
-                                )
+                Switch(
+                    checked = notificationStatus,
+                    onCheckedChange = {
+                        notificationStatus = it
+                        othersViewModel.OnEvent(
+                            ProfileEvent.EditNotificationStatus(
+                                notificationStatus!!
                             )
-                        },
-                        thumbContent = {
-                            if (notificationStatus as Boolean) {
-                                Icon(
-                                    imageVector = Icons.Filled.Check,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                                )
-                            }
-                        },
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = MaterialTheme.colorScheme.primary,
-                            checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
-                            uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
-                            uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
                         )
+                    },
+                    thumbContent = {
+                        if (notificationStatus!!) {
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(SwitchDefaults.IconSize),
+                            )
+                        }
+                    },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = MaterialTheme.colorScheme.primary,
+                        checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                        uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
+                        uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
                     )
-                }
+                )
             }
         }
     }
@@ -628,7 +629,13 @@ fun AppointmentView(
 
             if (prescription != null) {
                 Text(
-                    text = prescription.appointment?.appointmentDate?.toString() ?: "Unknown",
+                    text = if (appointment.appointmentDate != null) {
+                        convertLongToDateString(
+                            appointment.appointmentDate!!
+                        )
+                    } else {
+                        "Time is not confirmed yet"
+                    },
                     fontSize = 10.sp,
                     fontFamily = fontInria,
                     fontWeight = FontWeight.Bold,

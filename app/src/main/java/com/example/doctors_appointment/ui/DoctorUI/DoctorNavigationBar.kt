@@ -4,13 +4,9 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarViewMonth
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Man
-import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.outlined.CalendarViewMonth
-import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Man
-import androidx.compose.material.icons.outlined.People
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,22 +22,20 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.example.doctors_appointment.data.repository.MongoRepoImplementation
 import com.example.doctors_appointment.util.Screen
-import com.example.doctors_appointment.data.repository.MongoRepository
 import com.example.doctors_appointment.ui.booking.DoctorSchedule
 import com.example.doctors_appointment.ui.patientsUI.BottomNavigationItem
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.ui_doctor.DoctorViewModel
+import com.example.doctors_appointment.ui.DoctorUI.DoctorViewModel
+import com.example.doctors_appointment.ui_doctor.DoctorAppointmentDetails
+import com.example.doctors_appointment.ui_doctor.PatientProfile
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,7 +88,16 @@ fun DoctorNavBar() {
                 DoctorProfilePage(doctorViewModel = doctorViewModel)
             }
 
+            composable(Screen.doctorAppointmentDetails.route) {
+                DoctorAppointmentDetails(
+                    doctorViewModel = doctorViewModel,
+                    navController = navController
+                )
+            }
 
+            composable(Screen.seePatientProfile.route) {
+                PatientProfile(doctorViewModel = doctorViewModel)
+            }
         }
     }
 }

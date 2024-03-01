@@ -12,11 +12,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,26 +31,125 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.MyApp
 import com.example.doctors_appointment.R
+import com.example.doctors_appointment.data.model.Appointment
 import com.example.doctors_appointment.data.model.Patient
 import com.example.doctors_appointment.data.model.Prescription
 import com.example.doctors_appointment.ui.patientsUI.AppointmentView
 //import com.example.doctors_appointment.ui.patientsUI.AppointmentView
 import com.example.doctors_appointment.ui.patientsUI.mainHome.RoundImage
 import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
-import com.example.doctors_appointment.ui.theme.Indigo200
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.ui_doctor.DoctorViewModel
+import com.example.doctors_appointment.ui.DoctorUI.DoctorViewModel
+import com.example.doctors_appointment.ui.patientsUI.AppointmentRow
+import com.example.doctors_appointment.ui.theme.Indigo400
+import com.example.doctors_appointment.util.Screen
 
 @Composable
-fun AppointmentDetails(
+fun DoctorAppointmentDetails(
     navController: NavController,
-    doctorViewModel: DoctorViewModel
-
+    doctorViewModel: DoctorViewModel,
 ) {
 
-    val patient = MyApp.patient
+    val appointment = Appointment().apply {
+
+        // Assign values to appointment properties
+        prescription = Prescription() // Assuming you have a Prescription class
+        appointmentDate =
+            System.currentTimeMillis() // Example appointment date as current time in milliseconds
+        status = "Scheduled" // Example status
+        rating = 0 // Example initial rating
+        review = "" // Empty review initially
+        notes = "Follow up in 2 weeks" // Example appointment notes
+    }
+
+    val patient = Patient().apply {
+        name = "Md. Minhajul Haque"
+        email = "minhajul331047@gmail.com"
+        password = "password123"
+        contactNumber = "1234567890" // Example contact number
+        notification = true // Example notification setting
+        height = 175.5 // Example height in centimeters
+        weight = 70.0 // Example weight in kilograms
+        gender = true // Example gender (true for male, false for female)
+        dateOfBirth = "1990-01-01" // Example date of birth in yyyy-MM-dd format
+        profileImage = "path_to_image.jpg" // Example path to profile image
+    }
+
+
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Indigo50)
+            .padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+
+        Spacer(modifier = Modifier.height(40.dp))
+
+        Text(
+            text = "APPOINTMENT\nDETAIL",
+            style = MaterialTheme.typography.headlineLarge,
+            fontFamily = fontInria,
+            color = Indigo900,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(40.dp))
+
+        AppointmentRow(
+            appointment,
+            Modifier
+                .padding(40.dp)
+                .scale(1.4f),
+            doctorViewModel.user
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Button(
+            onClick = {
+                navController.navigate(Screen.seePatientProfile.route)
+                //navController.navigate(Screen.doctorsDetails.withArgs(patient._id.toHexString()))
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Indigo400,
+                contentColor = Color.White,
+            )
+        ) {
+            Text(
+                text = "Patient's Profile",
+                fontFamily = fontInria,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Spacer(modifier = Modifier.height(50.dp))
+
+    }
+}
+
+@Composable
+fun PatientProfile(
+    doctorViewModel: DoctorViewModel
+) {
+    val patient = Patient().apply {
+        name = "John Doe"
+        email = "john.doe@example.com"
+        password = "password123"
+        contactNumber = "1234567890" // Example contact number
+        notification = true // Example notification setting
+        height = 175.5 // Example height in centimeters
+        weight = 70.0 // Example weight in kilograms
+        gender = true // Example gender (true for male, false for female)
+        dateOfBirth = "1990-01-01" // Example date of birth in yyyy-MM-dd format
+        profileImage = "path_to_image.jpg" // Example path to profile image
+    }
+
+
 
     Column(
         modifier = Modifier

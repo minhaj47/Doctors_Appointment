@@ -231,6 +231,7 @@ fun BookSchedule(
         }
     }
 }
+
 @Composable
 fun Slot(
     slotNo: Int,

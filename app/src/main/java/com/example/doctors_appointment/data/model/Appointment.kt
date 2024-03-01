@@ -17,9 +17,4 @@ class Appointment: RealmObject{
     var rating: Int = 0
     var review: String = ""
     var notes: String = ""
-//    var owner_id: Stringhttps://realm.io/ = ""
-//
-//    constructor(ownerId: String) {
-//        owner_id = ownerId
-//    }
 }

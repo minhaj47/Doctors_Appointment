@@ -105,7 +105,7 @@ fun DoctorsDetailsPage(
             )
 
             Text(
-                text = doctor.medicalSpecialty,
+                text = "${doctor.medicalSpecialty} Specialist",
                 fontFamily = fontInria,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
@@ -302,7 +302,11 @@ fun DoctorsDetails(
             )
 
             Text(
-                text = if(doctor.gender!!) "Male" else "Female",
+                text = if (doctor.gender == null) {
+                    "Unknown"
+                } else if (doctor.gender == true) {
+                    "Male"
+                } else "Female",
                 fontSize = 17.sp,
                 fontFamily = fontInria,
                 color = Indigo900
@@ -356,6 +360,23 @@ fun DoctorsDetails(
 
             Text(
                 text = doctor.bmdcRegistrationNumber,
+                fontSize = 17.sp,
+                fontFamily = fontInria,
+                color = Indigo900
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            Text(
+                text = "Notification:",
+                fontSize = 19.sp,
+                fontFamily = fontInria,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = if (doctor.notification == null) "UNKNOWN" else if (doctor.notification == true) "ON" else "OFF",
                 fontSize = 17.sp,
                 fontFamily = fontInria,
                 color = Indigo900

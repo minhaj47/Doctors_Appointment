@@ -1,4 +1,4 @@
-package com.example.doctors_appointment.ui.ui_doctor
+package com.example.doctors_appointment.ui.DoctorUI
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,6 +7,8 @@ import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.repository.MongoRepository
 import com.example.doctors_appointment.util.ProfileEvent
 import com.example.doctors_appointment.util.UiEvent
+import io.realm.kotlin.ext.realmListOf
+import io.realm.kotlin.types.RealmList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -69,12 +71,37 @@ class DoctorViewModel(
                 newDoctor.notification = event.notificationStatus
             }
 
+            is ProfileEvent.AddQualification -> {
+                newDoctor.qualifications = realmListOf(event.qualification) /// change further
+            }
+
+            is ProfileEvent.EditAbout -> {
+                newDoctor.about = event.about
+            }
+
+            is ProfileEvent.EditBMDCNo -> {
+                newDoctor.bmdcRegistrationNumber = event.bmdcNo
+            }
+
+            is ProfileEvent.EditExperience -> {
+                newDoctor.experience = event.experience
+            }
+
+            is ProfileEvent.EditMedicalSpeciality -> {
+                newDoctor.medicalSpecialty = event.medicalSpeciality
+            }
+
+            is ProfileEvent.EditAddress -> {
+                newDoctor.address = event.address
+            }
+
             is ProfileEvent.OnSave -> {
                 viewModelScope.launch {
                     repository.updateDoctor(newDoctor)
                     user = newDoctor
                 }
             }
+
 
             else -> {}
         }

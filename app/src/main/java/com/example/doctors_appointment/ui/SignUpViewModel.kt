@@ -4,8 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.doctors_appointment.data.model.Doctor
 import com.example.doctors_appointment.data.model.Patient
-import com.example.doctors_appointment.data.repository.AuthRepository
-import com.example.doctors_appointment.util.Resource
+import com.example.doctors_appointment.authentication.AuthRepository
+import com.example.doctors_appointment.authentication.AuthUser
+import com.example.doctors_appointment.authentication.ResultState
 import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,23 +34,24 @@ class SignUpViewModel @Inject constructor(
             sendUiEvent(UiEvent.ShowSnackBar("Password is too short"))
         }else{
             viewModelScope.launch {
-                authRepository.registerUser(email, password).collect{ result ->
-                    when(result){
-                        is Resource.Success -> {
-                            if(asPatient){
+                val authUser = AuthUser(email, password)
+                authRepository.registerUser(authUser).collect { result ->
+                    when (result) {
+                        is ResultState.Success -> {
+                            if (asPatient) {
                                 createPatient(name, email, password)
-                            }else{
+                            } else {
                                 createDoctor(name, email, password)
                             }
                             sendUiEvent(UiEvent.Navigate(Screen.signIn.route))
                             sendUiEvent(UiEvent.ShowSnackBar("Sign Up Successful. Please Login."))
                         }
 
-                        is Resource.Loading -> {
+                        is ResultState.Loading -> {
                             sendUiEvent(UiEvent.ShowSnackBar("Wait for a while to register an user."))
                         }
 
-                        is Resource.Error -> {
+                        is ResultState.Error -> {
                             println("error inside signup" + result.message)
                             sendUiEvent(UiEvent.ShowSnackBar("Authentication failed."))
                         }

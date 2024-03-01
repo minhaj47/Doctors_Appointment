@@ -17,8 +17,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Details
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.Details
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -30,6 +37,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.Alignment
@@ -41,7 +50,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.doctors_appointment.MyApp
 import com.example.doctors_appointment.R
 
 import com.example.doctors_appointment.ui.theme.Indigo200
@@ -50,20 +58,22 @@ import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.util.fastForEachIndexed
 import androidx.navigation.NavController
 import com.example.doctors_appointment.data.model.Doctor
-import com.example.doctors_appointment.data.model.Patient
-import com.example.doctors_appointment.ui.patientsUI.AppointmentView
-import com.example.doctors_appointment.ui.patientsUI.EditProfile
-import com.example.doctors_appointment.ui.patientsUI.Profile
 import com.example.doctors_appointment.ui.patientsUI.mainHome.RoundImage
 import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
+import com.example.doctors_appointment.ui.DoctorUI.DoctorViewModel
+import com.example.doctors_appointment.ui.patientsUI.BottomNavigationItem
+import com.example.doctors_appointment.ui.patientsUI.mainHome.fontActor
 import com.example.doctors_appointment.ui.patientsUI.viewmodels.OthersViewModel
-import com.example.doctors_appointment.ui.ui_doctor.DoctorViewModel
+import com.example.doctors_appointment.ui.theme.Indigo400
 import com.example.doctors_appointment.util.ProfileEvent
+import com.example.doctors_appointment.util.Screen
 
 @Composable
 fun DoctorProfilePage(
@@ -72,6 +82,9 @@ fun DoctorProfilePage(
 
     var onEdit by remember {
         mutableStateOf(false)
+    }
+    var selectedTabIndex by remember {
+        mutableIntStateOf(0)
     }
 
     Column(
@@ -86,23 +99,53 @@ fun DoctorProfilePage(
                 .padding(start = 20.dp, bottom = 20.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "Profile",
-                fontSize = 20.sp,
-                fontFamily = fontInria,
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .weight(.9f)
-                    .padding(start = 20.dp, end = 20.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(Indigo200)
-                    .padding(5.dp)
+            val items = listOf(
+
+                BottomNavigationItem(
+                    title = "About",
+                    route = "about",
+                    selectedIcon = Icons.Filled.Description,
+                    unselectedIcon = Icons.Outlined.Description,
+                    hasNews = false
+                ),
+                BottomNavigationItem(
+                    title = "Details",
+                    route = "details",
+                    selectedIcon = Icons.Filled.Details,
+                    unselectedIcon = Icons.Outlined.Details,
+                    hasNews = false
+                )
             )
+
+            TabRow(
+                selectedTabIndex = selectedTabIndex,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(30))
+                    .weight(.8f)
+            ) {
+                items.fastForEachIndexed { index, item ->
+                    Tab(
+                        selected = index == selectedTabIndex,
+                        onClick = {
+                            selectedTabIndex = index
+                        },
+                        text = {
+                            Text(text = item.title)
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = if (index == selectedTabIndex)
+                                    item.selectedIcon else item.unselectedIcon,
+                                contentDescription = null
+                            )
+                        }
+                    )
+                }
+            }
             IconButton(
                 modifier = Modifier
-                    .weight(.2f)
-                    .padding(end = 15.dp),
+                    .weight(.15f)
+                    .padding(top = 10.dp),
                 onClick = {
                     onEdit = !onEdit
                 }
@@ -159,26 +202,57 @@ fun DoctorProfilePage(
                     fontSize = 25.sp,
                     textAlign = TextAlign.Center
                 )
+                Text(
+                    text = "${doctorViewModel.user.medicalSpecialty} Specialist",
+                    fontFamily = fontInria,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        tint = Indigo900,
+                        modifier = Modifier.width(20.dp)
+                    )
+
+                    Text(
+                        text = String.format("%.2f", doctorViewModel.user.rating),
+                        fontSize = 15.sp,
+                        fontFamily = fontInria,
+                        color = Indigo900
+                    )
+
+                }
             }
-
-
         }
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 5.dp, start = 5.dp, end = 5.dp, bottom = 65.dp),
+                .padding(top = 5.dp, start = 5.dp, end = 5.dp, bottom = 80.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
 
                 if (onEdit) {
-                    EditDoctorProfile(doctorViewModel.user, doctorViewModel)
+                    if (selectedTabIndex == 1) {
+                        EditDoctorDetails(doctorViewModel.user, doctorViewModel)
+                    } else {
+                        editAbout(doctor = doctorViewModel.user, doctorViewModel = doctorViewModel)
+                    }
                     OutlinedButton(
                         onClick = {
                             doctorViewModel.OnEvent(ProfileEvent.OnSave)
                             onEdit = !onEdit
-                        }
+                        },
                     ) {
                         Text(
                             text = "SAVE",
@@ -186,19 +260,20 @@ fun DoctorProfilePage(
                             fontFamily = fontInria,
                         )
                     }
-                } else DoctorProfile(doctorViewModel.user)
+                } else {
+                    if (selectedTabIndex == 1) {
+                        com.example.doctors_appointment.ui.patientsUI.DoctorsDetails(doctorViewModel.user)
+                    } else com.example.doctors_appointment.ui.patientsUI.About(doctorViewModel.user)
+                }
 
             }
         }
     }
-
-
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditDoctorProfile(
+fun EditDoctorDetails(
     doctor: Doctor,
     doctorViewModel: DoctorViewModel
 ) {
@@ -219,6 +294,58 @@ fun EditDoctorProfile(
                 .padding(start = 15.dp, top = 12.dp, end = 10.dp, bottom = 8.dp),
             verticalArrangement = Arrangement.Center
         ) {
+
+            var filledAddress by remember {
+                mutableStateOf(doctor.address)
+            }
+            OutlinedTextField(
+
+                value = filledAddress,
+                onValueChange = { newText ->
+                    filledAddress = newText
+                    doctorViewModel.OnEvent(ProfileEvent.EditAddress(filledAddress))
+                },
+                label = {
+                    Text(
+                        text = "Address",
+                        fontFamily = fontInria
+                    )
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent, // Text color
+                    unfocusedContainerColor = Color.Transparent, // Background color
+//                        focusedIndicatorColor = Color.Transparent, // No indicator when focused
+//                        unfocusedIndicatorColor = Color.Transparent // No indicator when not focused
+                ),
+            )
+
+            var filledMedicalSpeciality by remember {
+                mutableStateOf(doctor.medicalSpecialty)
+            }
+            OutlinedTextField(
+
+                value = filledMedicalSpeciality,
+                onValueChange = { newText ->
+                    filledMedicalSpeciality = newText
+                    doctorViewModel.OnEvent(
+                        ProfileEvent.EditMedicalSpeciality(
+                            filledMedicalSpeciality
+                        )
+                    )
+                },
+                label = {
+                    Text(
+                        text = "Medical Speciality",
+                        fontFamily = fontInria
+                    )
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent, // Text color
+                    unfocusedContainerColor = Color.Transparent, // Background color
+//                        focusedIndicatorColor = Color.Transparent, // No indicator when focused
+//                        unfocusedIndicatorColor = Color.Transparent // No indicator when not focused
+                ),
+            )
 
             var filledGender by remember {
                 mutableStateOf(if (doctor.gender == null) "Unknown" else if (doctor.gender == true) "Male" else "Female")
@@ -281,6 +408,7 @@ fun EditDoctorProfile(
 
             Spacer(modifier = Modifier.height(5.dp))
 
+
             var filledNumber by remember {
                 mutableStateOf(doctor.contactNumber)
             }
@@ -333,6 +461,89 @@ fun EditDoctorProfile(
 
             Spacer(modifier = Modifier.height(5.dp))
 
+            var filledQualification by remember {
+                mutableStateOf(doctor.qualifications.toString())
+            }
+            OutlinedTextField(
+
+                value = filledQualification,
+                onValueChange = { newText ->
+                    filledQualification = newText
+                    doctorViewModel.OnEvent(ProfileEvent.AddQualification(newText))
+                },
+                label = {
+                    Text(
+                        text = "Qualifications",
+                        fontFamily = fontInria
+                    )
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent, // Text color
+                    unfocusedContainerColor = Color.Transparent, // Background color
+//                        focusedIndicatorColor = Color.Transparent, // No indicator when focused
+//                        unfocusedIndicatorColor = Color.Transparent // No indicator when not focused
+                ),
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            var filledBMDCNo by remember {
+                mutableStateOf(doctor.bmdcRegistrationNumber)
+            }
+            OutlinedTextField(
+
+                value = filledBMDCNo,
+                onValueChange = { newText ->
+                    filledBMDCNo = newText
+                    doctorViewModel.OnEvent(ProfileEvent.EditBMDCNo(filledBMDCNo))
+                },
+                label = {
+                    Text(
+                        text = "BMDC Registration No",
+                        fontFamily = fontInria
+                    )
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent, // Text color
+                    unfocusedContainerColor = Color.Transparent, // Background color
+//                        focusedIndicatorColor = Color.Transparent, // No indicator when focused
+//                        unfocusedIndicatorColor = Color.Transparent // No indicator when not focused
+                ),
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            var filledExperience by remember {
+                mutableStateOf(doctor.experience)
+            }
+            OutlinedTextField(
+
+                value = filledExperience.toString(),
+                onValueChange = { newText ->
+
+                    filledExperience = try {
+                        newText.toInt()
+                    } catch (e: Exception) {
+                        doctor.experience
+                    }
+                    doctorViewModel.OnEvent(ProfileEvent.EditExperience(filledExperience))
+                },
+                label = {
+                    Text(
+                        text = "Experience",
+                        fontFamily = fontInria
+                    )
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent, // Text color
+                    unfocusedContainerColor = Color.Transparent, // Background color
+//                        focusedIndicatorColor = Color.Transparent, // No indicator when focused
+//                        unfocusedIndicatorColor = Color.Transparent // No indicator when not focused
+                ),
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
             val notification: Boolean = if (doctor.notification == null) {
                 true
             } else doctor.notification!!
@@ -349,7 +560,8 @@ fun EditDoctorProfile(
                     fontSize = 25.sp,
                     fontFamily = fontInria,
                     color = Color.Black,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(top = 5.dp)
                 )
 
                 Spacer(modifier = Modifier.width(10.dp))
@@ -385,13 +597,12 @@ fun EditDoctorProfile(
             }
         }
     }
-
 }
 
-
 @Composable
-fun DoctorProfile(
-    doctor: Doctor
+fun editAbout(
+    doctor: Doctor,
+    doctorViewModel: DoctorViewModel
 ) {
     Box(
         modifier = Modifier
@@ -400,116 +611,25 @@ fun DoctorProfile(
             .clip(RoundedCornerShape(5))
             .border(2.dp, Indigo500, RoundedCornerShape(5))
             .background(Color.White)
-    )
-    {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 15.dp, top = 12.dp, end = 10.dp, bottom = 8.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Text(
-                text = "Gender",
-                fontSize = 19.sp,
-                fontFamily = fontInria,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-
-            Text(
-                text = if (doctor.gender == null) {
-                    "Unknown"
-                } else if (doctor.gender == true) {
-                    "Male"
-                } else "Female",
-                fontSize = 17.sp,
-                fontFamily = fontInria,
-                color = Indigo900
-            )
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-
-
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Text(
-                text = "Phone:",
-                fontSize = 19.sp,
-                fontFamily = fontInria,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-
-            Text(
-                text = doctor.contactNumber,
-                fontSize = 17.sp,
-                fontFamily = fontInria,
-                color = Indigo900
-            )
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Text(
-                text = "Email Address:",
-                fontSize = 19.sp,
-                fontFamily = fontInria,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-
-            Text(
-                text = doctor.email,
-                fontSize = 17.sp,
-                fontFamily = fontInria,
-                color = Indigo900
-            )
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Text(
-                text = "Qualifications: ",
-                fontSize = 19.sp,
-                fontFamily = fontInria,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-
-            val qualifications = doctor.qualifications
-
-            Text(
-                text = doctor.qualifications.toString(),
-                fontSize = 17.sp,
-
-                fontFamily = fontInria,
-                color = Indigo900
-            )
-
-
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Text(
-                text = "Notification:",
-                fontSize = 19.sp,
-                fontFamily = fontInria,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-
-            Text(
-                text = doctor.notification.toString(),
-                fontSize = 17.sp,
-                fontFamily = fontInria,
-                color = Indigo900
-            )
-
+            .padding(15.dp)
+    ) {
+        var filledAbout by remember {
+            mutableStateOf(doctor.about)
         }
+        OutlinedTextField(
+
+            value = filledAbout,
+            onValueChange = { newText ->
+                filledAbout = newText
+                doctorViewModel.OnEvent(ProfileEvent.EditAbout(filledAbout))
+            },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent, // Text color
+                unfocusedContainerColor = Color.Transparent, // Background color
+                focusedIndicatorColor = Color.Transparent, // No indicator when focused
+                unfocusedIndicatorColor = Color.Transparent // No indicator when not focused
+
+            ),
+        )
     }
-
-
 }
