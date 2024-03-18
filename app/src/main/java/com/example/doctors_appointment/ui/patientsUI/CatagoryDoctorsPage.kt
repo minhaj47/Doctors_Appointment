@@ -30,13 +30,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.data.model.Doctor
-import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
+import com.example.doctors_appointment.ui.patientsUI.viewmodels.OthersViewModel
 import com.example.doctors_appointment.ui.theme.Indigo400
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo500
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.patientsUI.viewmodels.OthersViewModel
+import com.example.doctors_appointment.util.Screen
 
 @Composable
 fun CatagoryDoctorsPage(
@@ -46,7 +46,7 @@ fun CatagoryDoctorsPage(
 ) {
 
     if (category != null) {
-        othersViewModel.getDoctorFromCategory(category)
+        //othersViewModel.getDoctorFromCategory(category)
     }else{
         navController.popBackStack()
     }

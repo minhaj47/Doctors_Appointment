@@ -29,22 +29,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.example.doctors_appointment.data.repository.MongoRepoImplementation
-import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.data.repository.MongoRepository
-import com.example.doctors_appointment.ui.patientsUI.booking.BookSchedule
-import com.example.doctors_appointment.ui.patientsUI.booking.FinalBooking
 import com.example.doctors_appointment.ui.patientsUI.mainHome.MainHome
-import com.example.doctors_appointment.ui.theme.Indigo50
-import com.example.doctors_appointment.ui.theme.Indigo900
 import com.example.doctors_appointment.ui.patientsUI.viewmodels.BookingViewModel
 import com.example.doctors_appointment.ui.patientsUI.viewmodels.MainHomeViewModel
-import com.example.doctors_appointment.ui.patientsUI.viewmodels.OthersViewModel
+import com.example.doctors_appointment.ui.theme.Indigo50
+import com.example.doctors_appointment.ui.theme.Indigo900
+import com.example.doctors_appointment.util.Screen
 
 data class BottomNavigationItem(
     val title: String,
@@ -55,7 +50,6 @@ data class BottomNavigationItem(
 )
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavBar() {
 
@@ -63,7 +57,7 @@ fun NavBar() {
 
     // viewModel Initialization
 
-    val othersViewModel = OthersViewModel(repository)
+    //val othersViewModel = OthersViewModel(repository)
     val bookingViewModel = BookingViewModel(repository)
     val mainHomeViewModel = MainHomeViewModel(repository)
 
@@ -117,76 +111,76 @@ fun NavBar() {
                 MainHome(navController = navController, mainHomeViewModel = mainHomeViewModel)
             }
 
-            composable(Screen.doctors.route){
-                DoctorsPage(navController = navController, othersViewModel = othersViewModel)
-            }
-
-            composable(Screen.appointment.route){
-                AppointmentPage(othersViewModel = othersViewModel)
-            }
-
-            composable(Screen.profile.route){
-                ProfilePage(navController = navController, othersViewModel = othersViewModel)
-            }
-
-            composable(
-                route = Screen.doctorsDetails.route + "/{doctorId}",
-                arguments = listOf(
-                    navArgument("doctorId"){
-                        type = NavType.StringType
-                        defaultValue = ""
-                        nullable = true
-                    }
-                )
-                ){ entry ->
-                entry.arguments?.getString("doctorId")?.let {
-                    it1 -> DoctorsDetailsPage(navController = navController, doctorId = it1, othersViewModel)
-                }
-            }
-
-            composable(
-                route = Screen.catagoryDoctors.route + "/{category}",
-                arguments = listOf(
-                    navArgument("category"){
-                        type = NavType.StringType
-                        defaultValue = "Heart"
-                        nullable = true
-                    }
-                )
-            ){entry ->
-                 CatagoryDoctorsPage(navController = navController, category =  entry.arguments?.getString("category"), othersViewModel)
-            }
-
-            composable(
-                route = Screen.booking1.route + "/{doctorId}",
-                arguments = listOf(
-                    navArgument("doctorId"){
-                        type = NavType.StringType
-                        defaultValue = "Doctor1"
-                        nullable = true
-                    }
-                )
-            ){
-                BookSchedule(
-                    navController = navController,
-                    doctorId = it.arguments?.getString("doctorId"),
-                    bookingViewModel = bookingViewModel
-                )
-            }
-
-            composable(
-                route = Screen.finalBooking.route
-//                        + "/{appointmentId}",
+//            composable(Screen.doctors.route){
+//                DoctorsPage(navController = navController, othersViewModel = othersViewModel)
+//            }
+//
+//            composable(Screen.appointment.route){
+//                AppointmentPage(othersViewModel = othersViewModel)
+//            }
+//
+//            composable(Screen.profile.route){
+//                ProfilePage(navController = navController, othersViewModel = othersViewModel)
+//            }
+//
+//            composable(
+//                route = Screen.doctorsDetails.route + "/{doctorId}",
 //                arguments = listOf(
-//                    navArgument("appointmentId"){
+//                    navArgument("doctorId"){
 //                        type = NavType.StringType
-//                        defaultValue = "appointment1"
-//                        nullable = false
+//                        defaultValue = ""
+//                        nullable = true
 //                    }
 //                )
-            ){
-                FinalBooking(navController = navController, bookingViewModel = bookingViewModel)
-            }
+//                ){ entry ->
+//                entry.arguments?.getString("doctorId")?.let {
+//                    it1 -> DoctorsDetailsPage(navController = navController, doctorId = it1, othersViewModel)
+//                }
+//            }
+//
+//            composable(
+//                route = Screen.catagoryDoctors.route + "/{category}",
+//                arguments = listOf(
+//                    navArgument("category"){
+//                        type = NavType.StringType
+//                        defaultValue = "Heart"
+//                        nullable = true
+//                    }
+//                )
+//            ){entry ->
+//                 CatagoryDoctorsPage(navController = navController, category =  entry.arguments?.getString("category"), othersViewModel)
+//            }
+//
+//            composable(
+//                route = Screen.booking1.route + "/{doctorId}",
+//                arguments = listOf(
+//                    navArgument("doctorId"){
+//                        type = NavType.StringType
+//                        defaultValue = "Doctor1"
+//                        nullable = true
+//                    }
+//                )
+//            ){
+//                BookSchedule(
+//                    navController = navController,
+//                    doctorId = it.arguments?.getString("doctorId"),
+//                    bookingViewModel = bookingViewModel
+//                )
+//            }
+//
+//            composable(
+//                route = Screen.finalBooking.route
+////                        + "/{appointmentId}",
+////                arguments = listOf(
+////                    navArgument("appointmentId"){
+////                        type = NavType.StringType
+////                        defaultValue = "appointment1"
+////                        nullable = false
+////                    }
+////                )
+//            ){
+//                FinalBooking(navController = navController, bookingViewModel = bookingViewModel)
+//            }
         }
 
     }

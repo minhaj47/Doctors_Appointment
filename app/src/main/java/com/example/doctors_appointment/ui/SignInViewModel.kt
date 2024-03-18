@@ -32,6 +32,7 @@ class SignInViewModel @Inject constructor(
             authRepository.loginUser(authUser).collect { result ->
                 when (result) {
                     is ResultState.Success -> {
+                        println("inside authenticate success.")
 
                         val isPatient = CheckUser(email = email, password = password)
 
@@ -40,9 +41,7 @@ class SignInViewModel @Inject constructor(
                         } else {
                             sendUiEvent(UiEvent.Navigate(Screen.doctorNavBar.route))
                         }
-
                         //sendUiEvent(UiEvent.Navigate(Screen.checkUser.withArgs(email, password)))
-
                     }
 
                     is ResultState.Loading -> {
@@ -52,6 +51,7 @@ class SignInViewModel @Inject constructor(
                     is ResultState.Error -> {
                         sendUiEvent(UiEvent.ShowSnackBar("Invalid email or password."))
                     }
+
                 }
 
             }

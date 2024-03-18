@@ -23,9 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.R
-import com.example.doctors_appointment.util.Screen
-import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.patientsUI.viewmodels.MainHomeViewModel
+import com.example.doctors_appointment.ui.theme.Indigo50
 
 data class Category(
     val name: String,
@@ -110,7 +109,7 @@ fun CategoryCard(
              .background(Indigo50)
              .padding(15.dp)
              .clickable {
-                 navController.navigate(Screen.catagoryDoctors.withArgs(category.name))
+                 //navController.navigate(Screen.catagoryDoctors.withArgs(category.name))
              },
          verticalArrangement = Arrangement.Center,
          horizontalAlignment = Alignment.CenterHorizontally

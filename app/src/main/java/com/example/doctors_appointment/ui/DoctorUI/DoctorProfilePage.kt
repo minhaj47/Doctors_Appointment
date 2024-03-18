@@ -70,7 +70,7 @@ import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
 import com.example.doctors_appointment.ui.DoctorUI.DoctorViewModel
 import com.example.doctors_appointment.ui.patientsUI.BottomNavigationItem
 import com.example.doctors_appointment.ui.patientsUI.mainHome.fontActor
-import com.example.doctors_appointment.ui.patientsUI.viewmodels.OthersViewModel
+//import com.example.doctors_appointment.ui.patientsUI.viewmodels.OthersViewModel
 import com.example.doctors_appointment.ui.theme.Indigo400
 import com.example.doctors_appointment.util.ProfileEvent
 import com.example.doctors_appointment.util.Screen

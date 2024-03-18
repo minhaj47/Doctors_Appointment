@@ -10,9 +10,6 @@ import com.example.doctors_appointment.data.model.Patient
 import com.example.doctors_appointment.data.repository.MongoRepository
 import com.example.doctors_appointment.util.ProfileEvent
 import com.example.doctors_appointment.util.UiEvent
-import com.google.android.gms.tasks.Tasks.await
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -105,14 +102,12 @@ class OthersViewModel(
         }
     }
 
-    fun getDoctorFromCategory(category: String){
-        viewModelScope.launch {
-            repository.getCategoryDoctor(category).collect {
-                categoryDoctors.value = it
-            }
-        }
-
-    }
+//    fun getDoctorFromCategory(category: String){
+//        viewModelScope.launch {
+//            categoryDoctors = repository.getCategoryDoctor(category)
+//        }
+//
+//    }
 
     fun updatePatient(patient: Patient){
         viewModelScope.launch {
@@ -121,22 +116,20 @@ class OthersViewModel(
         }
     }
 
-    init {
-        viewModelScope.launch {
-            repository.getAllDoctors().collect{
-                doctors.value = it
-            }
-        }
-
-        viewModelScope.launch {
-            repository.getUpcomingAppointmentsOfUser().collect{
-                upcomingAppointments.value = it
-            }
-            repository.getPastAppointmentsOfUser().collect{
-                pastAppointments.value = it
-            }
-        }
-    }
+//    init {
+//        viewModelScope.launch {
+//            doctors = repository.getAllDoctors()
+//        }
+//
+//        viewModelScope.launch {
+//            repository.getUpcomingAppointmentsOfUser().collect{
+//                upcomingAppointments.value = it
+//            }
+//            repository.getPastAppointmentsOfUser().collect{
+//                pastAppointments.value = it
+//            }
+//        }
+//    }
 
 
 

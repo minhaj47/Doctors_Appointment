@@ -1,5 +1,7 @@
 package com.example.doctors_appointment.ui.patientsUI.booking
 
+import android.content.Context
+import android.widget.DatePicker
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,39 +11,36 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Today
-import androidx.compose.material.icons.outlined.CalendarToday
-import androidx.compose.material.icons.outlined.Today
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.doctors_appointment.data.model.Doctor
-import com.example.doctors_appointment.util.Screen
-import com.example.doctors_appointment.ui.patientsUI.BottomNavigationItem
 import com.example.doctors_appointment.ui.patientsUI.mainHome.fontInria
+import com.example.doctors_appointment.ui.patientsUI.viewmodels.BookingViewModel
 import com.example.doctors_appointment.ui.theme.Indigo400
 import com.example.doctors_appointment.ui.theme.Indigo50
 import com.example.doctors_appointment.ui.theme.Indigo900
-import com.example.doctors_appointment.ui.patientsUI.viewmodels.BookingViewModel
+import com.example.doctors_appointment.util.Screen
+import java.util.Calendar
+import java.util.Date
 
 @Composable
 fun BookSchedule(
@@ -77,69 +76,30 @@ fun BookSchedule(
         )
         Spacer(modifier = Modifier.height(40.dp))
 
-        val items = listOf(
 
-            BottomNavigationItem(
-                title = "Today",
-                route = "today",
-                selectedIcon = Icons.Filled.Today,
-                unselectedIcon = Icons.Outlined.Today,
-                hasNews = false
-            ),
-            BottomNavigationItem(
-                title = "Day 1",
-                route = "day1",
-                selectedIcon = Icons.Filled.CalendarToday,
-                unselectedIcon = Icons.Outlined.CalendarToday,
-                hasNews = false
-            ),
-            BottomNavigationItem(
-                title = "Day 2",
-                route = "day2",
-                selectedIcon = Icons.Filled.CalendarToday,
-                unselectedIcon = Icons.Outlined.CalendarToday,
-                hasNews = false
-            ),
-            BottomNavigationItem(
-                title = "Day 3",
-                route = "day3",
-                selectedIcon = Icons.Filled.CalendarToday,
-                unselectedIcon = Icons.Outlined.CalendarToday,
-                hasNews = false
-            ),
-            BottomNavigationItem(
-                title = "Day 4",
-                route = "day4",
-                selectedIcon = Icons.Filled.CalendarToday,
-                unselectedIcon = Icons.Outlined.CalendarToday,
-                hasNews = false
-            )
-        )
 
-        var selectedTabIndex by remember{
-            mutableIntStateOf(0)
-        }
-        TabRow(
-            selectedTabIndex = selectedTabIndex,
-        ) {
-            items.forEachIndexed { index, bottomNavigationItem ->
-                Tab(
-                    selected = selectedTabIndex == index,
-                    onClick = {
-                        selectedTabIndex = index
-                    },
-                    text = {
-                        Text(
-                            text = bottomNavigationItem.title,
-                            fontFamily = fontInria,
-                            fontSize = 13.sp
-                        )
-                    }
-                )
-            }
+        val selectedDate = showDatePick(context = LocalContext.current)
+        val currentDate = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.time
 
-        }
-        Spacer(modifier = Modifier.height(20.dp))
+        val selectedDateAdjusted = Calendar.getInstance().apply {
+            time = selectedDate
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.time
+
+//        val diffInMillis = selectedDateAdjusted.time - currentDate
+//        val diffInDays = TimeUnit.MILLISECONDS.toDays(diffInMillis).toInt()
+//        val selectedTabIndex = diffInDays.coerceAtLeast(0)
+        val selectedTabIndex = 3
+
+
 
         var selectedSlot by remember {
             mutableIntStateOf(-1)
@@ -157,9 +117,9 @@ fun BookSchedule(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
-        ){
-            for(i in 0..2){
-                Slot(12*(selectedTabIndex) + i, doctor, selectedSlot, bookingViewModel){
+        ) {
+            for (i in 0..2) {
+                Slot(12 * (selectedTabIndex) + i, doctor, selectedSlot, bookingViewModel) {
                     selectedSlot = it
                 }
             }
@@ -170,9 +130,9 @@ fun BookSchedule(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround,
-        ){
-            for(i in 3..5){
-                Slot(12*(selectedTabIndex) + i, doctor, selectedSlot, bookingViewModel){
+        ) {
+            for (i in 3..5) {
+                Slot(12 * (selectedTabIndex) + i, doctor, selectedSlot, bookingViewModel) {
                     selectedSlot = it
                 }
             }
@@ -192,9 +152,9 @@ fun BookSchedule(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
-        ){
-            for(i in 6..8){
-                Slot(12*(selectedTabIndex) + i, doctor, selectedSlot, bookingViewModel){
+        ) {
+            for (i in 6..8) {
+                Slot(12 * (selectedTabIndex) + i, doctor, selectedSlot, bookingViewModel) {
                     selectedSlot = it
                 }
             }
@@ -205,9 +165,9 @@ fun BookSchedule(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
-        ){
-            for(i in 9..11){
-                Slot(12*(selectedTabIndex) + i, doctor, selectedSlot, bookingViewModel){
+        ) {
+            for (i in 9..11) {
+                Slot(12 * (selectedTabIndex) + i, doctor, selectedSlot, bookingViewModel) {
                     selectedSlot = it
                 }
             }
@@ -216,7 +176,7 @@ fun BookSchedule(
 
         OutlinedButton(
             onClick = {
-                if(selectedSlot != -1){
+                if (selectedSlot != -1) {
                     bookingViewModel.setDateTime(selectedSlot)
                     navController.navigate(Screen.finalBooking.route)
                 }
@@ -230,6 +190,39 @@ fun BookSchedule(
             )
         }
     }
+}
+
+
+@Composable
+fun showDatePick(context: Context): Date {
+    val calendar = Calendar.getInstance()
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    val selectedDate = remember { mutableStateOf(Date()) }
+    val datePickerDialog = android.app.DatePickerDialog(
+        context,
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            val selectedCalendar = Calendar.getInstance()
+            selectedCalendar.set(year, month, dayOfMonth)
+            selectedDate.value = selectedCalendar.time
+        }, year, month, day
+    )
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Selected Date: ${selectedDate.value}")
+        Spacer(modifier = Modifier.size(16.dp))
+        Button(onClick = { datePickerDialog.show() }) {
+            Text(text = "Open Date Picker")
+        }
+    }
+
+    return selectedDate.value
 }
 
 @Composable
