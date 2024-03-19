@@ -176,14 +176,6 @@ fun NavBar() {
 
             composable(
                 route = Screen.finalBooking.route
-//                        + "/{appointmentId}",
-//                arguments = listOf(
-//                    navArgument("appointmentId"){
-//                        type = NavType.StringType
-//                        defaultValue = "appointment1"
-//                        nullable = false
-//                    }
-//                )
             ){
                 FinalBooking(navController = navController, bookingViewModel = bookingViewModel)
             }

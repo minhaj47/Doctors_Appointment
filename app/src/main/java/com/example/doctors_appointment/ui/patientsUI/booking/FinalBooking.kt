@@ -42,11 +42,6 @@ fun FinalBooking(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        val doctor = Doctor().apply {
-            name = "Khalid Azad"
-            address = "Mount Adora Hospital, Akhalia, Sylhet"
-        }
-
 
         Spacer(modifier = Modifier.height(40.dp))
 
@@ -65,7 +60,7 @@ fun FinalBooking(
             Modifier
                 .padding(40.dp)
                 .scale(1.4f),
-            doctor = doctor
+            doctor = bookingViewModel.doctor1
         )
 
         Spacer(modifier = Modifier.height(35.dp))

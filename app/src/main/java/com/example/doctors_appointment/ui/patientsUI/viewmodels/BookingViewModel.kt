@@ -1,5 +1,6 @@
 package com.example.doctors_appointment.ui.patientsUI.viewmodels
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.doctors_appointment.MyApp
@@ -21,6 +22,7 @@ class BookingViewModel(
     var doctor1 = Doctor()
     var user = MyApp.patient
     var appointment = Appointment()
+    var selectedDate = mutableStateOf(Date())
     fun getDoctorFromId(userId: String) {
 
         viewModelScope.launch {
@@ -45,8 +47,8 @@ class BookingViewModel(
     }
 
     fun getAppointmentTime(slotNo: Int): Long {
-        val day = slotNo / 12
-        val time = getTime(slotNo % 12)
+        val day = slotNo / 36
+        val time = getTime(slotNo % 36)
 
         val minutes = if (hasFraction(time)) 30 else 0
 
@@ -57,21 +59,46 @@ class BookingViewModel(
     }
 
 
-    fun getTime(slot: Int): Double{
-        return when(slot){
-                0 -> 9.30
-                1 -> 10.00
-                2 -> 10.30
-                3 -> 11.00
-                4 -> 11.30
-                5 -> 12.00
-                6 -> 6.30
-                7 -> 7.00
-                8 -> 7.30
-                9 -> 8.00
-                10 -> 8.30
-                11 -> 9.00
-                else -> -1.0
+    fun getTime(slot: Int): Double {
+        return when (slot) {
+            0 -> 10.00
+            1 -> 10.10
+            2 -> 10.20
+            3 -> 10.30
+            4 -> 10.40
+            5 -> 10.50
+            6 -> 11.00
+            7 -> 11.10
+            8 -> 11.20
+            9 -> 11.30
+            10 -> 11.40
+            11 -> 11.50
+            12->12.00
+            13->12.10
+            14->12.20
+            15->12.30
+            16->12.40
+            17->12.50
+            18->2.00
+            19->2.10
+            20->2.20
+            21->2.30
+            22->2.40
+            23->2.50
+            24->3.00
+            25->3.10
+            26->3.20
+            27->3.30
+            28->3.40
+            29->3.50
+            30->4.00
+            31->4.10
+            32->4.20
+            33->4.30
+            34->4.40
+            35->4.50
+
+            else -> -1.0
         }
     }
 

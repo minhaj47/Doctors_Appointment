@@ -24,7 +24,7 @@ class Doctor : RealmObject {
     var about: String = ""
     @Index var medicalSpecialty: String = ""
     var profileImage: String = ""
-    var availabilityStatus: RealmList<Boolean> = realmListOf(*List(60){ true }.toTypedArray())
+    var availabilityStatus: RealmList<Boolean> = realmListOf(*List(6000){ true }.toTypedArray())
     var consultationFee: Double = 0.0
     var experience: Int = 0
     var docoument: RealmList<String> = realmListOf()
