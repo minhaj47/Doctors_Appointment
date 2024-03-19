@@ -4,24 +4,21 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.example.doctors_appointment.util.Screen
-import com.example.doctors_appointment.ui.CheckUser
 import com.example.doctors_appointment.ui.DoctorNavBar
 import com.example.doctors_appointment.ui.HomePage
 import com.example.doctors_appointment.ui.SignIn
-import com.example.doctors_appointment.ui.SignUp
 import com.example.doctors_appointment.ui.SignInViewModel
+import com.example.doctors_appointment.ui.SignUp
 import com.example.doctors_appointment.ui.SignUpViewModel
 import com.example.doctors_appointment.ui.patientsUI.NavBar
+import com.example.doctors_appointment.util.Screen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class  MainActivity : ComponentActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

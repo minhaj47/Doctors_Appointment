@@ -2,11 +2,12 @@ package com.example.doctors_appointment.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.doctors_appointment.data.model.Doctor
-import com.example.doctors_appointment.data.model.Patient
 import com.example.doctors_appointment.authentication.AuthRepository
 import com.example.doctors_appointment.authentication.AuthUser
 import com.example.doctors_appointment.authentication.ResultState
+import com.example.doctors_appointment.data.model.Doctor
+import com.example.doctors_appointment.data.model.Patient
+import com.example.doctors_appointment.data.repository.MongoRepoImplementation
 import com.example.doctors_appointment.util.Screen
 import com.example.doctors_appointment.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -78,9 +79,8 @@ class SignUpViewModel @Inject constructor(
         patient.email = email
         patient.password = password
 
-        val signUpOp = SignUpOp()
         viewModelScope.launch {
-            signUpOp.insertPatient(patient)
+            MongoRepoImplementation.insertPatient(patient)
         }
         return patient
     }
@@ -96,9 +96,8 @@ class SignUpViewModel @Inject constructor(
         doctor.email = email
         doctor.password = password
 
-        val signUpOp = SignUpOp()
         viewModelScope.launch {
-            signUpOp.insertDoctor(doctor)
+            MongoRepoImplementation.insertDoctor(doctor)
         }
         return doctor
     }
